@@ -1,30 +1,40 @@
-# Archived third-party source snapshots (research/backup only)
+# Preserved upstream source snapshots
 
-This backup branch holds source-code snapshots separately from the original VIDEO-Clips product. All original licenses, attribution files and notices remain with their respective sources. **The VIDEO-Clips MIT license does not apply to these archived projects.** Do not merge the upstream directories into the VIDEO-Clips product or distribute them as a newly packaged commercial/public tool without appropriate rights.
+This folder contains **independent Git snapshots of the referenced upstream sources for personal backup and research**, not components of the VIDEO-Clips MIT-licensed distribution. Original license and attribution notices are preserved verbatim within each source tree. Do not merge these archived files into the public VIDEO-Clips product, commercialize, or repackage them without the relevant rights. The VIDEO-Clips MIT license does **not** relicense third-party materials.
 
-## Jianying Headless
+## 1. Jianying Headless + bundled yichen-jianying-edit Skill
 
-Source: https://github.com/wtcbill/jianying-headless
-Pinned upstream commit: `27c2627bbd0fccc8484000f32e9d66a820f4b698`
+Original project (currently unavailable): https://github.com/mcncarl/jianying-headless
+Available replacement: https://github.com/wtcbill/jianying-headless
+Pinned HEAD: `27c2627bbd0fccc8484000f32e9d66a820f4b698`
 
-All 104 UTF-8 source, configuration, license, documentation and test files have been copied byte-for-byte (Git blob hashes preserved) under `jianying-headless/`.
+- `jianying-headless/` preserves **106 of 108 upstream tracked files** with identical Git blob IDs and modes, including **all 104 source/configuration/doc/test files** plus both PNG preview image files.
+- Excluded: two binary demonstration MP4 videos larger than the connected GitHub text transfer limit:
+  - `docs/media/hypit-original-preview.mp4` — `baa864959cec361d66b2a0dd5fa7bd71bbbac0cb`, 4,421,052 bytes
+  - `docs/media/jianying-import-preview.mp4` — `60127bda902f31ac8e2db779ab98d64af442539f`, 4,223,556 bytes
+- The missing MP4s are *example output media*, not code, and can be recovered from the pinned upstream commit while that repository is accessible. The native Jianying application, paid visual assets and installed libraries were not published in the upstream repo in the first place.
 
-The upstream repository also contains **four binary preview assets**, excluded from this source-only snapshot because the connected GitHub text interface cannot transfer raw binary bytes:
-
-- `docs/media/hypit-original-frames.png` (Git blob `226b67bf73142cbcea4244a434ffc27692e11314`)
-- `docs/media/hypit-original-preview.mp4` (Git blob `baa864959cec361d66b2a0dd5fa7bd71bbbac0cb`)
-- `docs/media/jianying-import-frames.png` (Git blob `c95db67ce87b8fff8b1b58f04fcf9b9a2168a45d`)
-- `docs/media/jianying-import-preview.mp4` (Git blob `60127bda902f31ac8e2db779ab98d64af442539f`)
-
-These are visual demonstration files, not the source needed to build or understand the engine. If a bit-for-bit backup including binary demos and the full commit graph is needed, use `tools/create_private_source_backup.py` with Git on your local machine.
-
-## Yichen Skills
+## 2. Yichen Skills
 
 Source: https://github.com/mcncarl/yichen-skills
-Pinned upstream commit: `6e0c0ae43b5fd168040b8eb5193392e47b6f6301`
+Pinned HEAD: `6e0c0ae43b5fd168040b8eb5193392e47b6f6301`
 
-To be restored under `yichen-skills/` in the following archive commit. At the pinned commit the separate `yichen-jianying-edit` directory has been removed from that repository; the preserved edit Skill exists inside the Jianying Headless snapshot above.
+- `yichen-skills/` preserves **all 235 upstream tracked files**, including text sources, license and the single JPEG asset, with identical Git blob IDs and modes.
+- The current upstream HEAD removed the separate `yichen-jianying-edit` Skill folder. Its preserved version is under the **Jianying Headless** archive: `jianying-headless/skills/yichen-jianying-edit/`.
 
-## Hosted services
+## 3. Hosted integrations, not Git source repositories
 
-StepAudio 2.5 ASR is a hosted API, not a third source-code repository. Openverse is an API for sound-effect search, and each downloaded asset has independent terms.
+StepAudio 2.5 ASR: https://platform.stepfun.com/ — third-party hosted speech recognition service.
+Openverse: https://openverse.org/ — audio/visual media search service with per-asset licensing.
+
+## What counts as a complete backup?
+
+These GitHub archive directories represent source **file snapshots**. They do not embed the original Git *commit graphs*, and are not a byte-for-byte complete repo mirror because the two named MP4s are missing.
+
+For a fully restorable **private** backup including commit histories and binary demonstrations, run the included offline script from a machine with Git access:
+
+```bash
+python tools/create_private_source_backup.py --destination /absolute/private/backup/path
+```
+
+It creates pinned Git bundles and SHA-256 checksums, and does not change your personal files or upload third-party sources to any other repository. The archive branch is kept separate from `main`, where product development continues with independently implemented adapters.
