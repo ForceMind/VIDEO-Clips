@@ -22,3 +22,5 @@ dist/
 node_modules/
 test-artifacts/
 .video-clips/
+# User imports when the local UI uses the repository as its default workspace.
+/imports/
