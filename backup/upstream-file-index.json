@@ -1,0 +1,2080 @@
+{
+  "schema": "video-clips-upstream-git-index/v1",
+  "captured_utc": "2026-10-23",
+  "sources": [
+    {
+      "repository": "wtcbill/jianying-headless",
+      "commit": "27c2627bbd0fccc8484000f32e9d66a820f4b698",
+      "root_tree": "0e92e3ead59fd2a982d976c3d3e0a1efd4648345",
+      "file_count": 108,
+      "files": [
+        {
+          "path": ".gitattributes",
+          "type": "blob",
+          "git_object_sha": "5ad7da71ba0cd0f60903e1e38317d9c4dc40560a",
+          "size_bytes": 230
+        },
+        {
+          "path": ".github/workflows/windows-ffmpeg.yaml",
+          "type": "blob",
+          "git_object_sha": "924e269eae8a307aef4277ad04598313206f2a32",
+          "size_bytes": 4452
+        },
+        {
+          "path": ".gitignore",
+          "type": "blob",
+          "git_object_sha": "a118a7685954bb5e5e6d8643a7af762c479eaf97",
+          "size_bytes": 910
+        },
+        {
+          "path": "LICENSE",
+          "type": "blob",
+          "git_object_sha": "24dd341de842f49bacbe73861dc5752b994f2474",
+          "size_bytes": 2308
+        },
+        {
+          "path": "NOTICE",
+          "type": "blob",
+          "git_object_sha": "6f1fdc2d5830040d1707b3379dc83b124b68a697",
+          "size_bytes": 767
+        },
+        {
+          "path": "README.md",
+          "type": "blob",
+          "git_object_sha": "b27670ba1e9521ef65139927087e0b7552aa97e9",
+          "size_bytes": 8850
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "type": "blob",
+          "git_object_sha": "afd445c438c60d625ce8b87f414c4263482f3337",
+          "size_bytes": 5402
+        },
+        {
+          "path": "bridge/EncryptUtil.h",
+          "type": "blob",
+          "git_object_sha": "ec2ec9680761cbe7135e2c4fb53d0925262975e8",
+          "size_bytes": 720
+        },
+        {
+          "path": "bridge/SOURCE_MANIFEST.json",
+          "type": "blob",
+          "git_object_sha": "dece8a171e657aff306bdbb85c05a83f39834194",
+          "size_bytes": 2104
+        },
+        {
+          "path": "bridge/jy14_codec.cpp",
+          "type": "blob",
+          "git_object_sha": "ca2be89ca2d85811a751ef9cea13f7dc0d59139d",
+          "size_bytes": 18604
+        },
+        {
+          "path": "bridge/runtime_io.py",
+          "type": "blob",
+          "git_object_sha": "5ca21f7449308f3c2819ee58935ad000c500288b",
+          "size_bytes": 15799
+        },
+        {
+          "path": "docs/COMPATIBILITY-115-ACCEPTANCE.md",
+          "type": "blob",
+          "git_object_sha": "1970a1e81397a6ad1e3ff03767bc879118a8f298",
+          "size_bytes": 7603
+        },
+        {
+          "path": "docs/DISTRIBUTION-SCOPE.md",
+          "type": "blob",
+          "git_object_sha": "9eef91250eab3ddb2550a776591c040c6ec33633",
+          "size_bytes": 2183
+        },
+        {
+          "path": "docs/GETTING-STARTED.md",
+          "type": "blob",
+          "git_object_sha": "a844a293a933028b8150d90bf33f86ce300ca3ac",
+          "size_bytes": 12532
+        },
+        {
+          "path": "docs/HYPIT-COLLABORATION.md",
+          "type": "blob",
+          "git_object_sha": "a578f9f1669f0b4c2730df848e05a449edfa2c78",
+          "size_bytes": 9451
+        },
+        {
+          "path": "docs/ISSUE-REMEDIATION.md",
+          "type": "blob",
+          "git_object_sha": "81d984a395f51f7a39f0d256e838379e98a1a2cb",
+          "size_bytes": 6384
+        },
+        {
+          "path": "docs/LOCAL-FONTS.md",
+          "type": "blob",
+          "git_object_sha": "274b9aa1dd4141ce93722a3027d8a88eb13a0e01",
+          "size_bytes": 9911
+        },
+        {
+          "path": "docs/MACL-ADAPTER.md",
+          "type": "blob",
+          "git_object_sha": "a6b2fadd3ed1a5876647fb0046d2c8052cf2ae40",
+          "size_bytes": 3513
+        },
+        {
+          "path": "docs/POSITION-115-REPRO.md",
+          "type": "blob",
+          "git_object_sha": "5df0aab2158458944fa3031c6993ec0bf29b8b09",
+          "size_bytes": 9530
+        },
+        {
+          "path": "docs/SAVED-DEFAULTS-115.md",
+          "type": "blob",
+          "git_object_sha": "8ae4fd608ac4fd2b62109b7798c678db7b0fc535",
+          "size_bytes": 16247
+        },
+        {
+          "path": "docs/SAVED-DEFAULTS-116.md",
+          "type": "blob",
+          "git_object_sha": "c55eca2a883a2e46ac9b05895f1b9b6b7c1f8602",
+          "size_bytes": 5137
+        },
+        {
+          "path": "docs/UI-EXPORT.md",
+          "type": "blob",
+          "git_object_sha": "5064efbfde0fadd474f631c50d97dfe7c939de86",
+          "size_bytes": 4856
+        },
+        {
+          "path": "docs/VERIFICATION.md",
+          "type": "blob",
+          "git_object_sha": "815fbd2eb1715ade1026946ed433d66e3aaaaf19",
+          "size_bytes": 41575
+        },
+        {
+          "path": "docs/evidence/audio-save-115.json",
+          "type": "blob",
+          "git_object_sha": "cef481014675c38496900aacef0ad3f53a97c9f0",
+          "size_bytes": 33861
+        },
+        {
+          "path": "docs/evidence/curve-average-native-115.json",
+          "type": "blob",
+          "git_object_sha": "7dbe6b09b5987acdc10f738973ef2e26a523b52a",
+          "size_bytes": 10649
+        },
+        {
+          "path": "docs/evidence/native-save-115.json",
+          "type": "blob",
+          "git_object_sha": "7f1bb0d0ddd0a7badeb4f7276f0236653492c024",
+          "size_bytes": 34979
+        },
+        {
+          "path": "docs/evidence/speed-defaults-115.json",
+          "type": "blob",
+          "git_object_sha": "39f49ddff2ec23a8f42463ea33d21c84324a4140",
+          "size_bytes": 13431
+        },
+        {
+          "path": "docs/evidence/time-mapping-115.json",
+          "type": "blob",
+          "git_object_sha": "d55f3ff76bb061362112a9b45ff15b446cd220d8",
+          "size_bytes": 18577
+        },
+        {
+          "path": "docs/media/README.md",
+          "type": "blob",
+          "git_object_sha": "4ca844b7b5c5000623c1335199e2e9dfa72d4275",
+          "size_bytes": 2165
+        },
+        {
+          "path": "docs/media/hypit-original-frames.png",
+          "type": "blob",
+          "git_object_sha": "226b67bf73142cbcea4244a434ffc27692e11314",
+          "size_bytes": 947936
+        },
+        {
+          "path": "docs/media/hypit-original-preview.mp4",
+          "type": "blob",
+          "git_object_sha": "baa864959cec361d66b2a0dd5fa7bd71bbbac0cb",
+          "size_bytes": 4421052
+        },
+        {
+          "path": "docs/media/jianying-import-frames.png",
+          "type": "blob",
+          "git_object_sha": "c95db67ce87b8fff8b1b58f04fcf9b9a2168a45d",
+          "size_bytes": 884490
+        },
+        {
+          "path": "docs/media/jianying-import-preview.mp4",
+          "type": "blob",
+          "git_object_sha": "60127bda902f31ac8e2db779ab98d64af442539f",
+          "size_bytes": 4223556
+        },
+        {
+          "path": "docs/windows-ffmpeg.md",
+          "type": "blob",
+          "git_object_sha": "f835e197c47c426b2fd6598e82fbeac13edf889e",
+          "size_bytes": 4532
+        },
+        {
+          "path": "engine/blueprint-provenance.json",
+          "type": "blob",
+          "git_object_sha": "497f75010d49a717133f2b9553ef689258035ede",
+          "size_bytes": 952
+        },
+        {
+          "path": "engine/blueprint.json",
+          "type": "blob",
+          "git_object_sha": "cf8fe9c703f3670eaecb650fffde9b7608c5e615",
+          "size_bytes": 18021
+        },
+        {
+          "path": "engine/compound-blueprint.json",
+          "type": "blob",
+          "git_object_sha": "98dd727e689eefb5c5f55adcfc31a9fe0e550c1c",
+          "size_bytes": 20545
+        },
+        {
+          "path": "engine/ffmpeg_graph.py",
+          "type": "blob",
+          "git_object_sha": "34e6b46a10c83b60084d6bd18f2a4af14637e861",
+          "size_bytes": 7365
+        },
+        {
+          "path": "engine/ffmpeg_tools.py",
+          "type": "blob",
+          "git_object_sha": "8414aad5162363a249d2a382ff5e7383df593acb",
+          "size_bytes": 1919
+        },
+        {
+          "path": "engine/headless_runtime.py",
+          "type": "blob",
+          "git_object_sha": "9b43ff343d6852c12bb0ef4aa6d443dfd22495d9",
+          "size_bytes": 5224
+        },
+        {
+          "path": "engine/jy14_headless.py",
+          "type": "blob",
+          "git_object_sha": "d973ccc3e84223f13f83db6c2dd2b5e515697de0",
+          "size_bytes": 55068
+        },
+        {
+          "path": "engine/native-resource-catalog.json",
+          "type": "blob",
+          "git_object_sha": "468af7b1e7669c3d5a00151a28d8ee44fb95e8e5",
+          "size_bytes": 40440
+        },
+        {
+          "path": "engine/native_compound.py",
+          "type": "blob",
+          "git_object_sha": "7362c237fcad0de07b3200e69c7af888ffd19a7e",
+          "size_bytes": 19955
+        },
+        {
+          "path": "engine/native_edit.py",
+          "type": "blob",
+          "git_object_sha": "4b060ae8d082fa52253e8edce2013a06badc0967",
+          "size_bytes": 59648
+        },
+        {
+          "path": "engine/native_effects.py",
+          "type": "blob",
+          "git_object_sha": "ac403c9568b749de6caa5846c2f3fd8a3bab12cb",
+          "size_bytes": 4453
+        },
+        {
+          "path": "engine/native_export.cpp",
+          "type": "blob",
+          "git_object_sha": "037923d440740b0b02f1f42fc2efdc771cef6e36",
+          "size_bytes": 15323
+        },
+        {
+          "path": "engine/native_export.py",
+          "type": "blob",
+          "git_object_sha": "2395da0ae4cc3e8abeccc79ed225b60aa501a2bf",
+          "size_bytes": 38203
+        },
+        {
+          "path": "engine/native_fonts.py",
+          "type": "blob",
+          "git_object_sha": "dbfadbd03a155e16c23a688aa760ec5242356c1c",
+          "size_bytes": 14386
+        },
+        {
+          "path": "engine/native_motion.py",
+          "type": "blob",
+          "git_object_sha": "838ab5391f4939142b30261b46543a350c8da3af",
+          "size_bytes": 8720
+        },
+        {
+          "path": "engine/native_resources.py",
+          "type": "blob",
+          "git_object_sha": "ce749592c9a594b5a72718928c775f51e6348561",
+          "size_bytes": 7877
+        },
+        {
+          "path": "engine/native_visual_effects.py",
+          "type": "blob",
+          "git_object_sha": "1c1960c91adfc2250997b962acd6bfd771fc6419",
+          "size_bytes": 7422
+        },
+        {
+          "path": "engine/runtime_profiles.py",
+          "type": "blob",
+          "git_object_sha": "74751f39b424446d89ac5b6e1f2d21bb5e922e00",
+          "size_bytes": 4700
+        },
+        {
+          "path": "engine/test_headless.py",
+          "type": "blob",
+          "git_object_sha": "df93024c763cbeb806a37f62cccacf5a9ece3ff5",
+          "size_bytes": 12941
+        },
+        {
+          "path": "engine/test_keyframes.py",
+          "type": "blob",
+          "git_object_sha": "399576c9cfaecdc25d57699c4da0e6f6d71a8091",
+          "size_bytes": 4514
+        },
+        {
+          "path": "engine/test_media_extensions.py",
+          "type": "blob",
+          "git_object_sha": "66915a19e6812e14024a8ab9336aa90d47d23ccf",
+          "size_bytes": 4315
+        },
+        {
+          "path": "engine/test_native_compound.py",
+          "type": "blob",
+          "git_object_sha": "f6c50b4790b526296d0da138cf6c2f2efee64711",
+          "size_bytes": 12412
+        },
+        {
+          "path": "engine/test_native_edit.py",
+          "type": "blob",
+          "git_object_sha": "14883164ef3512de42a3f0e5656a657deb904f6d",
+          "size_bytes": 10377
+        },
+        {
+          "path": "engine/test_native_export.py",
+          "type": "blob",
+          "git_object_sha": "986fb58e683ba6665dbbf4c1523a6444d56a834b",
+          "size_bytes": 19101
+        },
+        {
+          "path": "engine/test_native_fonts.py",
+          "type": "blob",
+          "git_object_sha": "db96c8afbd353f143db6966574d9c529dd663605",
+          "size_bytes": 52467
+        },
+        {
+          "path": "engine/test_native_masks.py",
+          "type": "blob",
+          "git_object_sha": "1a7fdaba67111ef61ec9521664b0b7fde3a71bec",
+          "size_bytes": 7954
+        },
+        {
+          "path": "engine/test_native_transitions.py",
+          "type": "blob",
+          "git_object_sha": "69ef8d10dff44040addd6529982a6a0bc0fa5484",
+          "size_bytes": 5312
+        },
+        {
+          "path": "engine/test_native_visual_effects.py",
+          "type": "blob",
+          "git_object_sha": "1f9aec43acbeb2250ff23d0e5d1a065cfb7c303a",
+          "size_bytes": 4260
+        },
+        {
+          "path": "engine/test_windows_ffmpeg.py",
+          "type": "blob",
+          "git_object_sha": "54bcf48380230c384175e11d96f583cbb6d00dda",
+          "size_bytes": 11862
+        },
+        {
+          "path": "engine/ui_export.py",
+          "type": "blob",
+          "git_object_sha": "592fb88964a74b655a9e4bbfc95ab87cc75cf11d",
+          "size_bytes": 12995
+        },
+        {
+          "path": "engine/windows_export.py",
+          "type": "blob",
+          "git_object_sha": "767ae570d24e85de028a5a77d70d38a4bf26e369",
+          "size_bytes": 10858
+        },
+        {
+          "path": "engine/windows_portable.py",
+          "type": "blob",
+          "git_object_sha": "8b16bdc4f9ae263765db297a8a61a57ece913283",
+          "size_bytes": 17619
+        },
+        {
+          "path": "examples/basic.plan.json",
+          "type": "blob",
+          "git_object_sha": "81ade4b745745622cc7ce179f1b8b72a3d77cb1a",
+          "size_bytes": 633
+        },
+        {
+          "path": "examples/hypit-handoff.plan.json",
+          "type": "blob",
+          "git_object_sha": "82e0c1ab8ed1a63adacf7c6183a2c49069c4a2f0",
+          "size_bytes": 1159
+        },
+        {
+          "path": "licenses/Apache-2.0.txt",
+          "type": "blob",
+          "git_object_sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+          "size_bytes": 11358
+        },
+        {
+          "path": "licenses/jy-draftc-MIT.txt",
+          "type": "blob",
+          "git_object_sha": "91f6117896005d4e411714efe5febc0138c238eb",
+          "size_bytes": 1067
+        },
+        {
+          "path": "licenses/pyJianYingDraft-0.3.0-Apache-2.0.txt",
+          "type": "blob",
+          "git_object_sha": "5302cc0db9d6273e466d14acbf0fa9b34b2990f1",
+          "size_bytes": 11339
+        },
+        {
+          "path": "project.json",
+          "type": "blob",
+          "git_object_sha": "f32f1c79d683c7fb60f297be9817852856c0d5f8",
+          "size_bytes": 385
+        },
+        {
+          "path": "requirements-fonts.txt",
+          "type": "blob",
+          "git_object_sha": "53d6ca7df1369cefde7272eea8e3bc3f5a9023ad",
+          "size_bytes": 98
+        },
+        {
+          "path": "skills/yichen-jianying-edit/LICENSE",
+          "type": "blob",
+          "git_object_sha": "e89b3e1480f912443f0323b6b9446dbe630c5a9b",
+          "size_bytes": 2324
+        },
+        {
+          "path": "skills/yichen-jianying-edit/README.md",
+          "type": "blob",
+          "git_object_sha": "be98121c40b86047ac5e5291e34341b629153dac",
+          "size_bytes": 2627
+        },
+        {
+          "path": "skills/yichen-jianying-edit/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "003ecbc597abf505b28458920e50343b7c35e47b",
+          "size_bytes": 6225
+        },
+        {
+          "path": "skills/yichen-jianying-edit/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "c32080902045eb8aafe55f97100375576a10f1ac",
+          "size_bytes": 335
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/dependencies-and-notices.md",
+          "type": "blob",
+          "git_object_sha": "3433dadc11ee755403851f433472811286a3e77a",
+          "size_bytes": 2556
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/edit-existing-macos.md",
+          "type": "blob",
+          "git_object_sha": "0ac0ff8ac1424cfe4228b185a0c4a88a83046787",
+          "size_bytes": 8389
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/editing-and-qc.md",
+          "type": "blob",
+          "git_object_sha": "11a31bb231f7e0e14fc6272c6f27b92be1631dcb",
+          "size_bytes": 3017
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/export-macos.md",
+          "type": "blob",
+          "git_object_sha": "6338d183a34ebeab3d2e8d789c26f65a1c7dab41",
+          "size_bytes": 10358
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/headless-macos.md",
+          "type": "blob",
+          "git_object_sha": "660abf7ea9095dec5592ee47f45b7bb3889a8eba",
+          "size_bytes": 18182
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/hypit-handoff.md",
+          "type": "blob",
+          "git_object_sha": "227b7e471a41b601bf47cbc758ebea48bd97c627",
+          "size_bytes": 2357
+        },
+        {
+          "path": "skills/yichen-jianying-edit/references/plan-format.md",
+          "type": "blob",
+          "git_object_sha": "3c6a81e3829c329efae0b907811e4d196ef608fa",
+          "size_bytes": 5074
+        },
+        {
+          "path": "skills/yichen-jianying-edit/scripts/asr_once.py",
+          "type": "blob",
+          "git_object_sha": "6fdaceb3aad57002ad9b86ce2e44da9ed4a7070f",
+          "size_bytes": 5888
+        },
+        {
+          "path": "skills/yichen-jianying-edit/scripts/edit_plan.py",
+          "type": "blob",
+          "git_object_sha": "29eaf92aae4ce2348b66cfa645267cf2b8c0c6d5",
+          "size_bytes": 17349
+        },
+        {
+          "path": "skills/yichen-jianying-edit/scripts/headless_draft.py",
+          "type": "blob",
+          "git_object_sha": "e057c53b25705896b4b6711a949dd8520d081354",
+          "size_bytes": 4846
+        },
+        {
+          "path": "skills/yichen-jianying-edit/scripts/openverse_sfx.py",
+          "type": "blob",
+          "git_object_sha": "e35004fc9dda21ca8b27a465eabd917f4f48ac70",
+          "size_bytes": 27022
+        },
+        {
+          "path": "tests/test_compound_profiles.py",
+          "type": "blob",
+          "git_object_sha": "3f39a6dca50849d230960378a8972102f1face35",
+          "size_bytes": 2814
+        },
+        {
+          "path": "tests/test_issue_hardening.py",
+          "type": "blob",
+          "git_object_sha": "93aa339bb4f74449acbc14cfac83ef9246a9468a",
+          "size_bytes": 25899
+        },
+        {
+          "path": "tests/test_native_curve_average_115.py",
+          "type": "blob",
+          "git_object_sha": "698bc21f38dfa402e085e508ac1a84b0c204e66d",
+          "size_bytes": 11297
+        },
+        {
+          "path": "tests/test_native_defaults_115.py",
+          "type": "blob",
+          "git_object_sha": "c8435cf5f3fb1c5a2c1e7a3cd28eb6ccc70282ba",
+          "size_bytes": 43899
+        },
+        {
+          "path": "tests/test_native_defaults_116.py",
+          "type": "blob",
+          "git_object_sha": "3b59360bee354b0dac69e1e50f47f00384ba8469",
+          "size_bytes": 16045
+        },
+        {
+          "path": "tests/test_openverse_sfx.py",
+          "type": "blob",
+          "git_object_sha": "6832053d66c2b54b907c0dc23228970aa52431d7",
+          "size_bytes": 19687
+        },
+        {
+          "path": "tests/test_package.py",
+          "type": "blob",
+          "git_object_sha": "cf8462194c8c5e58e27d37936cc519acff731606",
+          "size_bytes": 5145
+        },
+        {
+          "path": "tests/test_position_staging_115.py",
+          "type": "blob",
+          "git_object_sha": "74e0d85c0274d74bf1f5fdeb14226a7f5a82f4c9",
+          "size_bytes": 19878
+        },
+        {
+          "path": "tests/test_public_media.py",
+          "type": "blob",
+          "git_object_sha": "7f74b1a3429cc24291b2fd582a097a42df692252",
+          "size_bytes": 1889
+        },
+        {
+          "path": "tests/test_runtime_profiles.py",
+          "type": "blob",
+          "git_object_sha": "0701893d03946f5f7dc1f17b29c7ca8063ba127c",
+          "size_bytes": 6826
+        },
+        {
+          "path": "tests/test_start_here.py",
+          "type": "blob",
+          "git_object_sha": "f0817ccc970be0a4b444be2ac55a4018b22de410",
+          "size_bytes": 4624
+        },
+        {
+          "path": "tests/test_ui_export.py",
+          "type": "blob",
+          "git_object_sha": "5d7a375a0b0006ea0e34a0915f3c92eb80992027",
+          "size_bytes": 5888
+        },
+        {
+          "path": "tools/build_native_codec.py",
+          "type": "blob",
+          "git_object_sha": "30b6c5af92f63ad2738a6aa8b28a7d032d45a63d",
+          "size_bytes": 6760
+        },
+        {
+          "path": "tools/build_toolchain.py",
+          "type": "blob",
+          "git_object_sha": "4ab72546872caccb3512383323848d964af0625b",
+          "size_bytes": 3986
+        },
+        {
+          "path": "tools/check_package.py",
+          "type": "blob",
+          "git_object_sha": "912189a98535136a0f0a892d9704a4e5f9609b5c",
+          "size_bytes": 7471
+        },
+        {
+          "path": "tools/reproduce_position_115.py",
+          "type": "blob",
+          "git_object_sha": "68e75b3b58952d642e923ed8f12a5945d1e28c14",
+          "size_bytes": 14838
+        },
+        {
+          "path": "tools/runtime_report.py",
+          "type": "blob",
+          "git_object_sha": "a04ad78a4ef135cb2a1e9e951ff4072c30c1131e",
+          "size_bytes": 3907
+        },
+        {
+          "path": "tools/smoke_test.py",
+          "type": "blob",
+          "git_object_sha": "9477bd69ef536d9d820200f1e582581603200236",
+          "size_bytes": 3884
+        },
+        {
+          "path": "tools/start_here.py",
+          "type": "blob",
+          "git_object_sha": "974759efac819f5c07568f114ed6cbd5c75a3a33",
+          "size_bytes": 11236
+        },
+        {
+          "path": "tools/windows_ci_evidence.py",
+          "type": "blob",
+          "git_object_sha": "4616f6d75a4c4ca234817582f98630445f62ff25",
+          "size_bytes": 4431
+        }
+      ]
+    },
+    {
+      "repository": "mcncarl/yichen-skills",
+      "commit": "6e0c0ae43b5fd168040b8eb5193392e47b6f6301",
+      "root_tree": "eef82fd210777a39571a4a21b96513eb57a982b5",
+      "file_count": 235,
+      "files": [
+        {
+          "path": ".agents/plugins/marketplace.json",
+          "type": "blob",
+          "git_object_sha": "75be87c23251cf105f7c3deb97023a186755f763",
+          "size_bytes": 394
+        },
+        {
+          "path": ".github/requirements-research-skills.txt",
+          "type": "blob",
+          "git_object_sha": "593e919eaabfbe4db8e2ab35fea2d5c5f1b30fbc",
+          "size_bytes": 102
+        },
+        {
+          "path": ".github/workflows/research-skills.yml",
+          "type": "blob",
+          "git_object_sha": "6cb5828aca939452e8a047e092b70e9056eb242c",
+          "size_bytes": 6393
+        },
+        {
+          "path": ".github/workflows/x-article-draft-uploader.yml",
+          "type": "blob",
+          "git_object_sha": "dab3d29990d719fbebe047d737baea41097c78c5",
+          "size_bytes": 1433
+        },
+        {
+          "path": ".github/workflows/yichen-wechat-windows-reader.yml",
+          "type": "blob",
+          "git_object_sha": "65b535ae627c54c6862155abcb275fe1625d5356",
+          "size_bytes": 1729
+        },
+        {
+          "path": ".gitignore",
+          "type": "blob",
+          "git_object_sha": "10fa5f90b17d468ba097d92a0ff3bd8d936783bd",
+          "size_bytes": 1168
+        },
+        {
+          "path": "LICENSE",
+          "type": "blob",
+          "git_object_sha": "24dd341de842f49bacbe73861dc5752b994f2474",
+          "size_bytes": 2308
+        },
+        {
+          "path": "README.md",
+          "type": "blob",
+          "git_object_sha": "31e53d70ac27608dd37d1442c7e5ddda15f9279d",
+          "size_bytes": 43930
+        },
+        {
+          "path": "README.zh.md",
+          "type": "blob",
+          "git_object_sha": "d8d278e5c0a9a3ee171f309fb22deaa9710614cd",
+          "size_bytes": 39661
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "type": "blob",
+          "git_object_sha": "6cc7e9d6e41df85639c0830ba6075c0070527557",
+          "size_bytes": 12129
+        },
+        {
+          "path": "assets/wechat-reward-code.jpg",
+          "type": "blob",
+          "git_object_sha": "7a8a7b7e46559e320ec6c3e0a241ee46a0fd9717",
+          "size_bytes": 88138
+        },
+        {
+          "path": "docs/skill-maintenance.md",
+          "type": "blob",
+          "git_object_sha": "f9c0c54d282876e305f214fa77710b5218e1e3e6",
+          "size_bytes": 2517
+        },
+        {
+          "path": "licenses/JimLiu-baoyu-skills-license-note.txt",
+          "type": "blob",
+          "git_object_sha": "20ce5e665b6b050d03b71d78fd144f9ecb53dd58",
+          "size_bytes": 419
+        },
+        {
+          "path": "licenses/KKKKhazix-khazix-skills-LICENSE.txt",
+          "type": "blob",
+          "git_object_sha": "2d848c9f3fed5317d59e0b88cafa289b42a29d2d",
+          "size_bytes": 1078
+        },
+        {
+          "path": "licenses/afar1-fieldtheory-cli-LICENSE.txt",
+          "type": "blob",
+          "git_object_sha": "733eedbb1376fd5e5de3c88fff408595e2fe2054",
+          "size_bytes": 1069
+        },
+        {
+          "path": "licenses/joeseesun-yt-search-download-LICENSE.txt",
+          "type": "blob",
+          "git_object_sha": "d9471a167a2c4fb753897da3b5476ced9372539c",
+          "size_bytes": 1077
+        },
+        {
+          "path": "licenses/wshuyi-x-article-publisher-skill-LICENSE.txt",
+          "type": "blob",
+          "git_object_sha": "04f025296b860b35b34a572f9471b026d5d6971d",
+          "size_bytes": 1063
+        },
+        {
+          "path": "plugins/yichen-grok-consult/.codex-plugin/plugin.json",
+          "type": "blob",
+          "git_object_sha": "971f9ebbe97cd7463137fda63bf712dfc5c0ff3e",
+          "size_bytes": 1420
+        },
+        {
+          "path": "plugins/yichen-grok-consult/.mcp.json",
+          "type": "blob",
+          "git_object_sha": "86666f96e63ef12737b78767dc60fe7a3f12129a",
+          "size_bytes": 163
+        },
+        {
+          "path": "plugins/yichen-grok-consult/README.md",
+          "type": "blob",
+          "git_object_sha": "ccd1506b6eea8102eeaf85b5666118c9587d1453",
+          "size_bytes": 6247
+        },
+        {
+          "path": "plugins/yichen-grok-consult/README.zh.md",
+          "type": "blob",
+          "git_object_sha": "6af26abf1e5e81d7a3ce6db88e691e1fddb1586e",
+          "size_bytes": 5576
+        },
+        {
+          "path": "plugins/yichen-grok-consult/mcp/authenticated-fallback-policy.mjs",
+          "type": "blob",
+          "git_object_sha": "9c1777032fc86724dd962fe3a714decdebff6003",
+          "size_bytes": 285
+        },
+        {
+          "path": "plugins/yichen-grok-consult/mcp/authenticated-fallback-policy.test.mjs",
+          "type": "blob",
+          "git_object_sha": "f37f39ca5044d4fd35131c6cdf3e8953d7e20ccf",
+          "size_bytes": 2163
+        },
+        {
+          "path": "plugins/yichen-grok-consult/mcp/server.mjs",
+          "type": "blob",
+          "git_object_sha": "cc05f15a393cede67cd2ff4c1bc182b65fe22a9f",
+          "size_bytes": 59014
+        },
+        {
+          "path": "plugins/yichen-grok-consult/skills/yichen-grok-consult/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "387f54176ef7a585f13c3c0287c75944307db24d",
+          "size_bytes": 9041
+        },
+        {
+          "path": "plugins/yichen-grok-consult/skills/yichen-grok-consult/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "aa6f66ac01eaf46f09d9acef55e0ab96285b7778",
+          "size_bytes": 540
+        },
+        {
+          "path": "scripts/compare_installed_skills.py",
+          "type": "blob",
+          "git_object_sha": "2a6b13890d058a509a0d65c5c4ff2096c0e74795",
+          "size_bytes": 4195
+        },
+        {
+          "path": "yichen-agent-memory/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "541711869353103becfc221ca385d3b3038a3096",
+          "size_bytes": 3649
+        },
+        {
+          "path": "yichen-agent-memory/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "d4442ae901bed2136336848f2a3e0326667842af",
+          "size_bytes": 233
+        },
+        {
+          "path": "yichen-agent-memory/references/daily-reads.md",
+          "type": "blob",
+          "git_object_sha": "accc0225e4f2b60eaef7574993e459ff045d723f",
+          "size_bytes": 803
+        },
+        {
+          "path": "yichen-agent-memory/references/install-upgrade.md",
+          "type": "blob",
+          "git_object_sha": "6e7e0641027803e53a7da94111c3fff97503a896",
+          "size_bytes": 2991
+        },
+        {
+          "path": "yichen-agent-memory/references/maintenance.md",
+          "type": "blob",
+          "git_object_sha": "63b3a4f17cd38dde257a72eacbc3e843d0480a57",
+          "size_bytes": 3754
+        },
+        {
+          "path": "yichen-agent-memory/references/template-development.md",
+          "type": "blob",
+          "git_object_sha": "092f923ab299034d9fadd6f9df2400d0513e6c07",
+          "size_bytes": 840
+        },
+        {
+          "path": "yichen-agent-memory/references/troubleshooting.md",
+          "type": "blob",
+          "git_object_sha": "e3446b3cde1455cb67254ba00a54ab28cb01873e",
+          "size_bytes": 2387
+        },
+        {
+          "path": "yichen-agent-memory/references/write-gateway.md",
+          "type": "blob",
+          "git_object_sha": "228a16eec01b915274fc4101dce9c8d293239479",
+          "size_bytes": 3840
+        },
+        {
+          "path": "yichen-asr/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "6c03faf098206364068382af721eda7fefe9d008",
+          "size_bytes": 5458
+        },
+        {
+          "path": "yichen-asr/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "2ae8cd9503a6b353ed56b5406a8333887cf65f29",
+          "size_bytes": 344
+        },
+        {
+          "path": "yichen-asr/references/providers.md",
+          "type": "blob",
+          "git_object_sha": "273f609915dd0e145d67865e66471754a594e654",
+          "size_bytes": 1637
+        },
+        {
+          "path": "yichen-asr/scripts/asr_doctor.py",
+          "type": "blob",
+          "git_object_sha": "048846bda0b50cec801a8c1e6073a951943dbf7b",
+          "size_bytes": 3274
+        },
+        {
+          "path": "yichen-asr/scripts/route_asr.py",
+          "type": "blob",
+          "git_object_sha": "2dcce14cfb477d0400a26f572db4286345039dd2",
+          "size_bytes": 2616
+        },
+        {
+          "path": "yichen-asr/tests/test_contract.py",
+          "type": "blob",
+          "git_object_sha": "0e118b22334268d3331013b39bf2e98c12e785d9",
+          "size_bytes": 2425
+        },
+        {
+          "path": "yichen-bookmarks-export/README.md",
+          "type": "blob",
+          "git_object_sha": "ebd402d5f9e5a536cd3fcdb93f32c0b543a7d528",
+          "size_bytes": 2157
+        },
+        {
+          "path": "yichen-bookmarks-export/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "d5f583ee59256e1bae7a619147cc159b25da3c56",
+          "size_bytes": 7696
+        },
+        {
+          "path": "yichen-bookmarks-export/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "9dd42f7724fd43006d131ecbfee7ad941e24593f",
+          "size_bytes": 299
+        },
+        {
+          "path": "yichen-bookmarks-export/references/chrome-collections.md",
+          "type": "blob",
+          "git_object_sha": "0098e24ad1c21fce26e74811d1b0bb2497d0e620",
+          "size_bytes": 2502
+        },
+        {
+          "path": "yichen-bookmarks-export/references/handoff-contract.md",
+          "type": "blob",
+          "git_object_sha": "adad29eeedd7da2c7c9b383c201699debc49b2ff",
+          "size_bytes": 3637
+        },
+        {
+          "path": "yichen-bookmarks-export/scripts/chrome_collectors.mjs",
+          "type": "blob",
+          "git_object_sha": "79921008251c6e4ead7fdffb9510fca6974a78dc",
+          "size_bytes": 11845
+        },
+        {
+          "path": "yichen-bookmarks-export/scripts/export_x_links.py",
+          "type": "blob",
+          "git_object_sha": "a3f1f5ac306851f7f6d49b0afeaf66edda93c663",
+          "size_bytes": 3275
+        },
+        {
+          "path": "yichen-bookmarks-export/scripts/validate_link_file.py",
+          "type": "blob",
+          "git_object_sha": "1503fd950806a460752655454b908f6be43ff178",
+          "size_bytes": 2338
+        },
+        {
+          "path": "yichen-bookmarks-export/tests/routes.json",
+          "type": "blob",
+          "git_object_sha": "da3ae51ce6cf9406af1843698942cf4ff99ece15",
+          "size_bytes": 1447
+        },
+        {
+          "path": "yichen-bookmarks-export/tests/test_skill_contract.py",
+          "type": "blob",
+          "git_object_sha": "d0ad6e0b0b51925952de083753d9a1e2e51a699a",
+          "size_bytes": 2945
+        },
+        {
+          "path": "yichen-chatgpt-web-research/README.md",
+          "type": "blob",
+          "git_object_sha": "46643dfb7ad51465c9c95e1eaf7db269e56be0eb",
+          "size_bytes": 1586
+        },
+        {
+          "path": "yichen-chatgpt-web-research/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "811466807dc8f165caf630d78764ef11b505f139",
+          "size_bytes": 14295
+        },
+        {
+          "path": "yichen-chatgpt-web-research/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "a0cb14f1e97d1d340bdcb46bebe2178af455dd07",
+          "size_bytes": 292
+        },
+        {
+          "path": "yichen-codex-chatgpt/.gitignore",
+          "type": "blob",
+          "git_object_sha": "15a72a5e08b867847c178873bf3d302ad602944a",
+          "size_bytes": 81
+        },
+        {
+          "path": "yichen-codex-chatgpt/LICENSE",
+          "type": "blob",
+          "git_object_sha": "4bb93b89d19215d17707eaac7549f154915818dc",
+          "size_bytes": 242
+        },
+        {
+          "path": "yichen-codex-chatgpt/README.md",
+          "type": "blob",
+          "git_object_sha": "1e5de85679211bc96594cf506d73f757e24e6b1e",
+          "size_bytes": 4734
+        },
+        {
+          "path": "yichen-codex-chatgpt/SECURITY.md",
+          "type": "blob",
+          "git_object_sha": "98ca20466ad657e38928931389a9a0ae978c1cf8",
+          "size_bytes": 1305
+        },
+        {
+          "path": "yichen-codex-chatgpt/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "d8ab568576f5f313d3d7cac9971fa1f656957990",
+          "size_bytes": 15390
+        },
+        {
+          "path": "yichen-codex-chatgpt/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "51277b662a2d3e1afd15c29662b111368afa72a4",
+          "size_bytes": 428
+        },
+        {
+          "path": "yichen-codex-chatgpt/config.example.md",
+          "type": "blob",
+          "git_object_sha": "3a00ee7bdfc70b0bc5f835dcfe970c7f7f9062ca",
+          "size_bytes": 757
+        },
+        {
+          "path": "yichen-codex-chatgpt/examples/routing-prompts.md",
+          "type": "blob",
+          "git_object_sha": "2571bfc94a964eb8a66f404f0cfb49f0f71246df",
+          "size_bytes": 10330
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/browser-session.md",
+          "type": "blob",
+          "git_object_sha": "6c079a08f16c54b888492fe43d9264321f17f2c6",
+          "size_bytes": 15512
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/browser-surface-ladder.md",
+          "type": "blob",
+          "git_object_sha": "cc36c231b9a56da34db0c8298ddfc2f44c5c3c57",
+          "size_bytes": 15080
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/c2c-protocol.md",
+          "type": "blob",
+          "git_object_sha": "513b031268add49fc36429e48b5d48f4d74835a7",
+          "size_bytes": 21080
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/chat-pro-selection.md",
+          "type": "blob",
+          "git_object_sha": "e90775c0b5f584524549d65e16bc03cd45360455",
+          "size_bytes": 5124
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/full-harness-proxy.md",
+          "type": "blob",
+          "git_object_sha": "31cfc4de7ea1e7f02ac28c95b3ddb257afbbcd09",
+          "size_bytes": 13821
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/hybrid.md",
+          "type": "blob",
+          "git_object_sha": "9c7cc87f67b7458b7f2f5c448ea034302f26b772",
+          "size_bytes": 3862
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/local-code.md",
+          "type": "blob",
+          "git_object_sha": "45576f2eab200e7adacc7b6cd06193eac8718a1d",
+          "size_bytes": 5695
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/remote-extended.md",
+          "type": "blob",
+          "git_object_sha": "80c39c94b5151a5005189809423f4caafdded686",
+          "size_bytes": 10540
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/research.md",
+          "type": "blob",
+          "git_object_sha": "39678090369ec68ad543800fb4be6f5501467654",
+          "size_bytes": 7362
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/review.md",
+          "type": "blob",
+          "git_object_sha": "1661f6fa962130e672e7545d57608b1aa732b880",
+          "size_bytes": 8387
+        },
+        {
+          "path": "yichen-codex-chatgpt/references/setup.md",
+          "type": "blob",
+          "git_object_sha": "e413c5088b090baf3a636f1db782b4a82b2ff91c",
+          "size_bytes": 4285
+        },
+        {
+          "path": "yichen-content-archive/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "de5f30ab75f091686049bf62ddb429c8ff33d68c",
+          "size_bytes": 12075
+        },
+        {
+          "path": "yichen-content-archive/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "ac97f4ad706ef49f0c4c31a12e30e320f002fcd6",
+          "size_bytes": 289
+        },
+        {
+          "path": "yichen-content-archive/references/bounded-site-execution.md",
+          "type": "blob",
+          "git_object_sha": "bbc074c9c1812c16bb1f69a2978bd75bf5439925",
+          "size_bytes": 2120
+        },
+        {
+          "path": "yichen-content-archive/references/executor-safety.md",
+          "type": "blob",
+          "git_object_sha": "49ad131fae87d9f6dcbf59ee11756b4fb1c75b95",
+          "size_bytes": 4425
+        },
+        {
+          "path": "yichen-content-archive/references/handoff-contract.md",
+          "type": "blob",
+          "git_object_sha": "adad29eeedd7da2c7c9b383c201699debc49b2ff",
+          "size_bytes": 3637
+        },
+        {
+          "path": "yichen-content-archive/references/platform-routes.md",
+          "type": "blob",
+          "git_object_sha": "293c072160fe38459e030d0424e674d0543884c2",
+          "size_bytes": 10274
+        },
+        {
+          "path": "yichen-content-archive/references/xiaohongshu-bitable.md",
+          "type": "blob",
+          "git_object_sha": "a7d496f93e40ad60188a9b27fb3f224ceeef997f",
+          "size_bytes": 3568
+        },
+        {
+          "path": "yichen-content-archive/scripts/douyin_download.py",
+          "type": "blob",
+          "git_object_sha": "02288e71a1c350c8913d08d810d80fb01f7b653b",
+          "size_bytes": 10869
+        },
+        {
+          "path": "yichen-content-archive/scripts/firecrawl_site.py",
+          "type": "blob",
+          "git_object_sha": "df78cad29aad69aff4ae311cdfcc2ca2f19668ab",
+          "size_bytes": 57407
+        },
+        {
+          "path": "yichen-content-archive/scripts/known_media_download.py",
+          "type": "blob",
+          "git_object_sha": "1290d4bcbf9c07ff036caf2d654825f622a8ba12",
+          "size_bytes": 15958
+        },
+        {
+          "path": "yichen-content-archive/scripts/wechat_mp_local.py",
+          "type": "blob",
+          "git_object_sha": "d1b6f1f26ff44d6119fcfc023e2df239159bd36e",
+          "size_bytes": 5727
+        },
+        {
+          "path": "yichen-content-archive/scripts/weibo_known_url.py",
+          "type": "blob",
+          "git_object_sha": "51b3b0af30ec85a0b6f7a3d63b50c170e596e677",
+          "size_bytes": 21303
+        },
+        {
+          "path": "yichen-content-archive/scripts/x_known_url.py",
+          "type": "blob",
+          "git_object_sha": "89edb559e16417a01cd2219229e5b1225ae4533c",
+          "size_bytes": 43613
+        },
+        {
+          "path": "yichen-content-archive/scripts/xiaohongshu_fetch.py",
+          "type": "blob",
+          "git_object_sha": "8bbf01ab967a0447f09de7fd780e902023d645f8",
+          "size_bytes": 22483
+        },
+        {
+          "path": "yichen-content-archive/scripts/xiaoyuzhou_opencli.py",
+          "type": "blob",
+          "git_object_sha": "d74ca7766e8903656a06fd3c5d1bde20ab6bf94e",
+          "size_bytes": 15059
+        },
+        {
+          "path": "yichen-content-archive/scripts/xiaoyuzhou_stepfun.py",
+          "type": "blob",
+          "git_object_sha": "afa4250cd3d33b00176b2b34c934523930b76f44",
+          "size_bytes": 13965
+        },
+        {
+          "path": "yichen-content-archive/scripts/youtube_known_url.py",
+          "type": "blob",
+          "git_object_sha": "e8b629fbd11694a27299188688a791382adec5c0",
+          "size_bytes": 19414
+        },
+        {
+          "path": "yichen-content-archive/tests/routes.json",
+          "type": "blob",
+          "git_object_sha": "3b5c411d83744649dc1b8693bcb7701823072f1c",
+          "size_bytes": 8648
+        },
+        {
+          "path": "yichen-content-archive/tests/test_firecrawl_site.py",
+          "type": "blob",
+          "git_object_sha": "f69e8ad5764b99cde66be615e55d9bab6768a412",
+          "size_bytes": 34380
+        },
+        {
+          "path": "yichen-content-archive/tests/test_known_media_download.py",
+          "type": "blob",
+          "git_object_sha": "a1d166ec63db22873f8488e17571c5f7a0fcdb3e",
+          "size_bytes": 4242
+        },
+        {
+          "path": "yichen-content-archive/tests/test_overwrite_guards.py",
+          "type": "blob",
+          "git_object_sha": "e9ea868bebbadc126c8fb1c43a4e8d4e1f36dbf1",
+          "size_bytes": 7411
+        },
+        {
+          "path": "yichen-content-archive/tests/test_skill_contract.py",
+          "type": "blob",
+          "git_object_sha": "9dda9f932e23805c3be5ac1da10204c9248f036e",
+          "size_bytes": 13180
+        },
+        {
+          "path": "yichen-content-archive/tests/test_social_fetchers.py",
+          "type": "blob",
+          "git_object_sha": "2f7a66c010baff2474b503110323b9e3fdfffad5",
+          "size_bytes": 3631
+        },
+        {
+          "path": "yichen-content-archive/tests/test_weibo_known_url.py",
+          "type": "blob",
+          "git_object_sha": "bcb2694caaad3bf0fd960cfa1695548a5b8573aa",
+          "size_bytes": 5772
+        },
+        {
+          "path": "yichen-content-archive/tests/test_x_known_url.py",
+          "type": "blob",
+          "git_object_sha": "3116cc11625aefedcf523658bcc1460bfe4f9ce8",
+          "size_bytes": 16648
+        },
+        {
+          "path": "yichen-content-archive/tests/test_youtube_known_url.py",
+          "type": "blob",
+          "git_object_sha": "55bab57250a405a880abb0dc4f993fe9c59faedf",
+          "size_bytes": 5339
+        },
+        {
+          "path": "yichen-mac-wechat-dual-open/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "829489d42463a924e8e5a0cdd4de59d02407c1a0",
+          "size_bytes": 5825
+        },
+        {
+          "path": "yichen-mac-wechat-dual-open/references/reliability-and-risks.md",
+          "type": "blob",
+          "git_object_sha": "5d9d512c1010264d129ef894077eae994c4c876e",
+          "size_bytes": 2618
+        },
+        {
+          "path": "yichen-mac-wechat-dual-open/scripts/wechat_dual_open.py",
+          "type": "blob",
+          "git_object_sha": "130a4c24568dac5f101b995b048a20f7c4c49815",
+          "size_bytes": 13832
+        },
+        {
+          "path": "yichen-mac-wechat-dual-open/tests/test_no_wechat_control.py",
+          "type": "blob",
+          "git_object_sha": "258154c5883be03cc492c6f4fb9d3a08718a596f",
+          "size_bytes": 917
+        },
+        {
+          "path": "yichen-unified-search/README.md",
+          "type": "blob",
+          "git_object_sha": "270bcdcc118782aa2d3175999bc75c3d9ae56dd8",
+          "size_bytes": 20259
+        },
+        {
+          "path": "yichen-unified-search/README.zh.md",
+          "type": "blob",
+          "git_object_sha": "65296b0949b8ad10ef94f2a268b60a750fbd0819",
+          "size_bytes": 17155
+        },
+        {
+          "path": "yichen-unified-search/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "6be5c9c88ae7b64563e94ca7c73b188d9ecf3daa",
+          "size_bytes": 8857
+        },
+        {
+          "path": "yichen-unified-search/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "60e2c3b4e9412a6a4227255a97eccca34fd8f980",
+          "size_bytes": 800
+        },
+        {
+          "path": "yichen-unified-search/references/THIRD_PARTY_NOTICES.md",
+          "type": "blob",
+          "git_object_sha": "26e9c59b94e47c838351efa9ca0e5852e3871d7d",
+          "size_bytes": 1829
+        },
+        {
+          "path": "yichen-unified-search/references/access-boundaries.md",
+          "type": "blob",
+          "git_object_sha": "c079c5dbf413c68260eee836b63a978fa9e85417",
+          "size_bytes": 2753
+        },
+        {
+          "path": "yichen-unified-search/references/candidate-schema.md",
+          "type": "blob",
+          "git_object_sha": "d50a18f4736656652fe7c4cc0e964ddb9879c5cf",
+          "size_bytes": 14415
+        },
+        {
+          "path": "yichen-unified-search/references/routes.md",
+          "type": "blob",
+          "git_object_sha": "972023da5ecbda30c1525095c6d55fba95e1b5dd",
+          "size_bytes": 28551
+        },
+        {
+          "path": "yichen-unified-search/scripts/aihot_search.py",
+          "type": "blob",
+          "git_object_sha": "e87bac5e39836aec20ab20dc0205d62571077063",
+          "size_bytes": 25134
+        },
+        {
+          "path": "yichen-unified-search/scripts/anysearch_adapter.py",
+          "type": "blob",
+          "git_object_sha": "fcf2e92781d4a3857b4221c8a5fbd7253115f147",
+          "size_bytes": 59087
+        },
+        {
+          "path": "yichen-unified-search/scripts/firecrawl_adapter.py",
+          "type": "blob",
+          "git_object_sha": "ea87acbd5c4d8f7719e2af5fa0f4014ea1ab7fed",
+          "size_bytes": 28300
+        },
+        {
+          "path": "yichen-unified-search/scripts/fxtwitter_search.py",
+          "type": "blob",
+          "git_object_sha": "18914ca8bb375a6008c9acd99d721b092dc33a37",
+          "size_bytes": 15469
+        },
+        {
+          "path": "yichen-unified-search/scripts/grok_x_result_adapter.py",
+          "type": "blob",
+          "git_object_sha": "60de6c850030b1619f850c2e420c8b21f74198c9",
+          "size_bytes": 23976
+        },
+        {
+          "path": "yichen-unified-search/scripts/public_urls.py",
+          "type": "blob",
+          "git_object_sha": "ecc124c1552898a1fd92b93d6635b1621961e69c",
+          "size_bytes": 3337
+        },
+        {
+          "path": "yichen-unified-search/scripts/route_search.py",
+          "type": "blob",
+          "git_object_sha": "8dea8cf23688f6fd06d1ddd493c178fbd3e78ea7",
+          "size_bytes": 81552
+        },
+        {
+          "path": "yichen-unified-search/scripts/search_policy.py",
+          "type": "blob",
+          "git_object_sha": "57d9aa0fcaea7ecd711c971d6f19bb234ce507b8",
+          "size_bytes": 363
+        },
+        {
+          "path": "yichen-unified-search/scripts/weibo_adapter.py",
+          "type": "blob",
+          "git_object_sha": "9670f3cdc369d741b8cc3b44900b03d2dcdf8521",
+          "size_bytes": 44412
+        },
+        {
+          "path": "yichen-unified-search/scripts/x_research_merge.py",
+          "type": "blob",
+          "git_object_sha": "869c1799fd4de56a6627da0204af18fd323f98f1",
+          "size_bytes": 38240
+        },
+        {
+          "path": "yichen-unified-search/scripts/youtube_search.py",
+          "type": "blob",
+          "git_object_sha": "04c1499ae349786c6838b36406fb1f9cc370bda6",
+          "size_bytes": 26339
+        },
+        {
+          "path": "yichen-unified-search/scripts/zhihu_adapter.py",
+          "type": "blob",
+          "git_object_sha": "3c157d1b69acc266469982cdb8ae0fadc56b8b2f",
+          "size_bytes": 22844
+        },
+        {
+          "path": "yichen-unified-search/tests/test_aihot_search.py",
+          "type": "blob",
+          "git_object_sha": "7c2350be4b3ef71f3bfb28fb499e1698362cf283",
+          "size_bytes": 11982
+        },
+        {
+          "path": "yichen-unified-search/tests/test_anysearch_adapter.py",
+          "type": "blob",
+          "git_object_sha": "f1adae40da70a7e04074786f5761cf0c25fe4222",
+          "size_bytes": 38283
+        },
+        {
+          "path": "yichen-unified-search/tests/test_firecrawl_adapter.py",
+          "type": "blob",
+          "git_object_sha": "1ec6a3c40be49941dd53b066de2e52e1adc50aff",
+          "size_bytes": 19678
+        },
+        {
+          "path": "yichen-unified-search/tests/test_fxtwitter_search.py",
+          "type": "blob",
+          "git_object_sha": "3fc39c8832163edea6620b8f281fb3a5f6512d22",
+          "size_bytes": 6123
+        },
+        {
+          "path": "yichen-unified-search/tests/test_grok_x_result_adapter.py",
+          "type": "blob",
+          "git_object_sha": "7df8642cbbac5fd569eb4fd772c7effd1ec77843",
+          "size_bytes": 13536
+        },
+        {
+          "path": "yichen-unified-search/tests/test_route_search.py",
+          "type": "blob",
+          "git_object_sha": "01e57fc92f213bebdead2511675c4e560b33c9f8",
+          "size_bytes": 43886
+        },
+        {
+          "path": "yichen-unified-search/tests/test_search_intent_regressions.py",
+          "type": "blob",
+          "git_object_sha": "7b5d82c87057e71b6b77f25e24ea8c6ed67b5105",
+          "size_bytes": 9643
+        },
+        {
+          "path": "yichen-unified-search/tests/test_static_contract.py",
+          "type": "blob",
+          "git_object_sha": "337a8d592aa376b237fcf07d092dbf53d6e17ca9",
+          "size_bytes": 9147
+        },
+        {
+          "path": "yichen-unified-search/tests/test_weibo_adapter.py",
+          "type": "blob",
+          "git_object_sha": "b003af59f52bd8f2415962be93b3608d2c69fae1",
+          "size_bytes": 19919
+        },
+        {
+          "path": "yichen-unified-search/tests/test_x_research_merge.py",
+          "type": "blob",
+          "git_object_sha": "0b1df0e29bd9d54cd5f41b7af028d7c486b053d7",
+          "size_bytes": 14255
+        },
+        {
+          "path": "yichen-unified-search/tests/test_youtube_search.py",
+          "type": "blob",
+          "git_object_sha": "a49b95aabbf8c94a1229424f936c18f4ac391072",
+          "size_bytes": 7266
+        },
+        {
+          "path": "yichen-unified-search/tests/test_zhihu_adapter.py",
+          "type": "blob",
+          "git_object_sha": "184c1d9daa220d3f4ad28e4d78a3156373efbfbf",
+          "size_bytes": 16647
+        },
+        {
+          "path": "yichen-volc-asr/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "3dda72afe2592d063c16698173f015617a191f85",
+          "size_bytes": 8220
+        },
+        {
+          "path": "yichen-volc-asr/scripts/transcribe.py",
+          "type": "blob",
+          "git_object_sha": "07003ed1ec5e337897cf3dcf61abfa80b0a75143",
+          "size_bytes": 38789
+        },
+        {
+          "path": "yichen-web-research/README.md",
+          "type": "blob",
+          "git_object_sha": "f856c8eb24b1c9fd3db9621c549edd5eab034a25",
+          "size_bytes": 23464
+        },
+        {
+          "path": "yichen-web-research/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "a5efb6a15209502e2985c5522a488cc66d8f2521",
+          "size_bytes": 14088
+        },
+        {
+          "path": "yichen-web-research/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "1732b12b90398386d840d2441ae4bb3d2c89a347",
+          "size_bytes": 701
+        },
+        {
+          "path": "yichen-web-research/references/backend-readiness.md",
+          "type": "blob",
+          "git_object_sha": "6965431c56e0eb8b638a2029455ebb6f0ff0ae3e",
+          "size_bytes": 3040
+        },
+        {
+          "path": "yichen-web-research/references/hengzong-execution-contract.md",
+          "type": "blob",
+          "git_object_sha": "11c2c7a24b2951f41ff3fee3f132dd583b73a819",
+          "size_bytes": 5613
+        },
+        {
+          "path": "yichen-web-research/references/hengzong-research.md",
+          "type": "blob",
+          "git_object_sha": "fd0e8fbc1b3147b17cac2ccfdf425f0dd4def437",
+          "size_bytes": 26646
+        },
+        {
+          "path": "yichen-web-research/scripts/assemble_hengzong_evidence.py",
+          "type": "blob",
+          "git_object_sha": "b973e21751358e7304b6495a6a6f334c71b93f6c",
+          "size_bytes": 70145
+        },
+        {
+          "path": "yichen-web-research/scripts/doctor_yichen.py",
+          "type": "blob",
+          "git_object_sha": "33c7dc0b0f8b171d1ef232a337f7484e86d87fba",
+          "size_bytes": 34679
+        },
+        {
+          "path": "yichen-web-research/scripts/plan_hengzong_research.py",
+          "type": "blob",
+          "git_object_sha": "f4a84fdb5ccda726ce5ed82ab967f9ba076a4c61",
+          "size_bytes": 66955
+        },
+        {
+          "path": "yichen-web-research/scripts/validate_family.py",
+          "type": "blob",
+          "git_object_sha": "5ead5e6da06b2caf5ab1b7fde89e226e47fba84a",
+          "size_bytes": 23850
+        },
+        {
+          "path": "yichen-web-research/tests/test_doctor_integrations.py",
+          "type": "blob",
+          "git_object_sha": "a3d5439d87be4cc5ebee3ddce6e6866ccbaa261c",
+          "size_bytes": 15749
+        },
+        {
+          "path": "yichen-web-research/tests/test_hengzong_evidence.py",
+          "type": "blob",
+          "git_object_sha": "5653e6fcb1fe1e6bcad4e3efa25430c27ee2750c",
+          "size_bytes": 41650
+        },
+        {
+          "path": "yichen-web-research/tests/test_hengzong_plan.py",
+          "type": "blob",
+          "git_object_sha": "df8e5d81c84de961cc936eff28c7f015e12808ff",
+          "size_bytes": 25729
+        },
+        {
+          "path": "yichen-web-research/tests/test_router_contract.py",
+          "type": "blob",
+          "git_object_sha": "f45fff4354ece6325047a57b52588a198766b816",
+          "size_bytes": 12249
+        },
+        {
+          "path": "yichen-web-research/tests/trigger_matrix.json",
+          "type": "blob",
+          "git_object_sha": "dd5031f68ae09b9a269be871b6e489e620c4e415",
+          "size_bytes": 1761
+        },
+        {
+          "path": "yichen-wechat-local-vault/README.md",
+          "type": "blob",
+          "git_object_sha": "90c3b8cdbc8d9faf588b06b258312fc392a3fd34",
+          "size_bytes": 4181
+        },
+        {
+          "path": "yichen-wechat-local-vault/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "8570d3c0c9309c24f4ce665819a9d195139d76ed",
+          "size_bytes": 12086
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot.md",
+          "type": "blob",
+          "git_object_sha": "abe63674f8addaff51070aadab796934bf5ad1a6",
+          "size_bytes": 5744
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot/CONTRIBUTOR_GRANT.md",
+          "type": "blob",
+          "git_object_sha": "7aa6a28b2e4853c8828d88e0535462af825d06ce",
+          "size_bytes": 529
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot/PROVENANCE.md",
+          "type": "blob",
+          "git_object_sha": "c03ba4f46032885d03a9e2bb55b6a823f8614b5a",
+          "size_bytes": 2667
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot/REPOSITORY_LICENSE.txt",
+          "type": "blob",
+          "git_object_sha": "24dd341de842f49bacbe73861dc5752b994f2474",
+          "size_bytes": 2308
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot/THIRD_PARTY_NOTICES.md",
+          "type": "blob",
+          "git_object_sha": "66f6b97b29cbeed103b9f998d42849cc4ee6713a",
+          "size_bytes": 576
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot/requirements.lock",
+          "type": "blob",
+          "git_object_sha": "a4b17cffb87e5810a703864addefa884742d8fc3",
+          "size_bytes": 221
+        },
+        {
+          "path": "yichen-wechat-local-vault/references/windows-snapshot/sbom.spdx.json",
+          "type": "blob",
+          "git_object_sha": "c8402e4ee4c8ca28ba6aa0b0e357985075979f30",
+          "size_bytes": 4466
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/decrypt_all_dbs.py",
+          "type": "blob",
+          "git_object_sha": "3f718032c0ffdb85cbee5b87cad62ba7b0a189e0",
+          "size_bytes": 8891
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/export_chat.py",
+          "type": "blob",
+          "git_object_sha": "24846b225dddbda53f45631fb1bad33901120d5d",
+          "size_bytes": 11347
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/extract_keys.py",
+          "type": "blob",
+          "git_object_sha": "a84f15800811590b9e1d22b6defd341a77f76438",
+          "size_bytes": 22319
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/list_contacts.py",
+          "type": "blob",
+          "git_object_sha": "62a6eaa9f7cb44af895015ba8718fca87f22ddae",
+          "size_bytes": 5358
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/search_sns.py",
+          "type": "blob",
+          "git_object_sha": "dec68b26e4cf4511f1237200cc75d73bdeb2c2cf",
+          "size_bytes": 10898
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/snapshot_reader.py",
+          "type": "blob",
+          "git_object_sha": "9d792b78bdac3298aeab037f338b415c3bc9b76f",
+          "size_bytes": 33128
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/vault_cli.py",
+          "type": "blob",
+          "git_object_sha": "2980979ad836a038e38df88688c8fd7f79e8e5c7",
+          "size_bytes": 56171
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/wechat_digest.py",
+          "type": "blob",
+          "git_object_sha": "6fe2950c9955584cab3413e88e6b1b9e699f4725",
+          "size_bytes": 15103
+        },
+        {
+          "path": "yichen-wechat-local-vault/scripts/wechat_schema.py",
+          "type": "blob",
+          "git_object_sha": "bdadd3ee129ad93f3faf1a54f693c90eb00b623c",
+          "size_bytes": 1385
+        },
+        {
+          "path": "yichen-wechat-local-vault/tests/fixture_factory.py",
+          "type": "blob",
+          "git_object_sha": "579d87ab6982b21f58883d21cb7be9c2db5a4101",
+          "size_bytes": 4916
+        },
+        {
+          "path": "yichen-wechat-local-vault/tests/test_snapshot_reader.py",
+          "type": "blob",
+          "git_object_sha": "f353b15198da0ddf5ec1f63944b6cabc17cef785",
+          "size_bytes": 16087
+        },
+        {
+          "path": "yichen-wechat-local-vault/tests/test_vault_integration.py",
+          "type": "blob",
+          "git_object_sha": "834e96e517dfc68342bf932bd115c4433fef1fe5",
+          "size_bytes": 9538
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/README.md",
+          "type": "blob",
+          "git_object_sha": "1f5a76fced0ea6dd40d4332ad9b4c8b283bf7d61",
+          "size_bytes": 2718
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "dee6e3c9090cdce75b9b6e71e59574241eae666c",
+          "size_bytes": 6346
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "bad9b6e58c253d492ecf3f971bc4ee1d8e197013",
+          "size_bytes": 399
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/references/exporter-workflow.md",
+          "type": "blob",
+          "git_object_sha": "0e70df3cf0b61ab353354bcbf746cfb1b48676fe",
+          "size_bytes": 4501
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/references/manual-gates.md",
+          "type": "blob",
+          "git_object_sha": "7ad6c2aaac79de805f318d8723bd7df57e76a2aa",
+          "size_bytes": 2253
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/references/output-schema.md",
+          "type": "blob",
+          "git_object_sha": "976c106b86787e55287f4b5b4d7a1ecc9a275768",
+          "size_bytes": 2175
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/scripts/analyze_history.py",
+          "type": "blob",
+          "git_object_sha": "f2dd213b95e9b2e540db671e71677a59fdda2083",
+          "size_bytes": 9827
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/scripts/doctor.py",
+          "type": "blob",
+          "git_object_sha": "fcfb81a81c7b04ac1611575edaff7987709c39a4",
+          "size_bytes": 5595
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/scripts/download_urls.py",
+          "type": "blob",
+          "git_object_sha": "0d4749bd987251598e2f3ecee79dc74c463c3690",
+          "size_bytes": 6534
+        },
+        {
+          "path": "yichen-wechat-mp-batch-exporter/scripts/start_wxdown_service.py",
+          "type": "blob",
+          "git_object_sha": "a1ba0b36fa3656e513654d756285bc1ed2916b38",
+          "size_bytes": 2017
+        },
+        {
+          "path": "yichen-wechat-windows-reader/CONTRIBUTOR_GRANT.md",
+          "type": "blob",
+          "git_object_sha": "7aa6a28b2e4853c8828d88e0535462af825d06ce",
+          "size_bytes": 529
+        },
+        {
+          "path": "yichen-wechat-windows-reader/PROVENANCE.md",
+          "type": "blob",
+          "git_object_sha": "c03ba4f46032885d03a9e2bb55b6a823f8614b5a",
+          "size_bytes": 2667
+        },
+        {
+          "path": "yichen-wechat-windows-reader/README.md",
+          "type": "blob",
+          "git_object_sha": "adb86170c4eecf79fb29dae9a4dfe4c9a0cf23e1",
+          "size_bytes": 2414
+        },
+        {
+          "path": "yichen-wechat-windows-reader/REVIEW_EVIDENCE.md",
+          "type": "blob",
+          "git_object_sha": "21631b93ce3952cf4b127349a4bf3fb2446ef248",
+          "size_bytes": 5379
+        },
+        {
+          "path": "yichen-wechat-windows-reader/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "c3f80e2aa422193a0aace97a7a50dad665d644e6",
+          "size_bytes": 5500
+        },
+        {
+          "path": "yichen-wechat-windows-reader/THIRD_PARTY_NOTICES.md",
+          "type": "blob",
+          "git_object_sha": "66f6b97b29cbeed103b9f998d42849cc4ee6713a",
+          "size_bytes": 576
+        },
+        {
+          "path": "yichen-wechat-windows-reader/requirements.in",
+          "type": "blob",
+          "git_object_sha": "eebdb8a8588846fc8bcc5149f3e64a4325141bb6",
+          "size_bytes": 38
+        },
+        {
+          "path": "yichen-wechat-windows-reader/requirements.lock",
+          "type": "blob",
+          "git_object_sha": "a4b17cffb87e5810a703864addefa884742d8fc3",
+          "size_bytes": 221
+        },
+        {
+          "path": "yichen-wechat-windows-reader/sbom.spdx.json",
+          "type": "blob",
+          "git_object_sha": "c8402e4ee4c8ca28ba6aa0b0e357985075979f30",
+          "size_bytes": 4466
+        },
+        {
+          "path": "yichen-wechat-windows-reader/scripts/snapshot_reader.py",
+          "type": "blob",
+          "git_object_sha": "a80349f18e7d5d8d3c58c034254286816fd6634c",
+          "size_bytes": 33113
+        },
+        {
+          "path": "yichen-wechat-windows-reader/tests/fixture_factory.py",
+          "type": "blob",
+          "git_object_sha": "579d87ab6982b21f58883d21cb7be9c2db5a4101",
+          "size_bytes": 4916
+        },
+        {
+          "path": "yichen-wechat-windows-reader/tests/test_snapshot_reader.py",
+          "type": "blob",
+          "git_object_sha": "15f030f0c885545e69b327ec9df321babf9eadc7",
+          "size_bytes": 16022
+        },
+        {
+          "path": "yichen-wecom-local-vault/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "46776146cdccc428a5f6289c3c9b6024da0e2f9f",
+          "size_bytes": 8723
+        },
+        {
+          "path": "yichen-wecom-local-vault/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "b7a94c7642e466476feb15514a779bee092d58b0",
+          "size_bytes": 275
+        },
+        {
+          "path": "yichen-wecom-local-vault/references/database-notes.md",
+          "type": "blob",
+          "git_object_sha": "f5560c3fd6244ddb1b6590abe1974b5e5f331dda",
+          "size_bytes": 2685
+        },
+        {
+          "path": "yichen-wecom-local-vault/scripts/capture_key_macos.py",
+          "type": "blob",
+          "git_object_sha": "0691786e7109f5de40ae5ad271eae78956cee206",
+          "size_bytes": 24203
+        },
+        {
+          "path": "yichen-wecom-local-vault/scripts/scan_dbkey_manager_macos.py",
+          "type": "blob",
+          "git_object_sha": "81a1c83e57c6e9419f4e573d7b81be2bc28673bc",
+          "size_bytes": 12460
+        },
+        {
+          "path": "yichen-wecom-local-vault/scripts/test_wecom_local_vault.py",
+          "type": "blob",
+          "git_object_sha": "e7c759d86e3e542d0abe6171dab517d929d12a97",
+          "size_bytes": 4038
+        },
+        {
+          "path": "yichen-wecom-local-vault/scripts/vault_cli.py",
+          "type": "blob",
+          "git_object_sha": "ead3b6c186b9859d1dda5e1430f806025fc3e124",
+          "size_bytes": 22484
+        },
+        {
+          "path": "yichen-wecom-local-vault/scripts/wecom_common.py",
+          "type": "blob",
+          "git_object_sha": "80dc1fee0c90711c1cfadd080657b9f208dccb21",
+          "size_bytes": 6526
+        },
+        {
+          "path": "yichen-wecom-local-vault/scripts/wecom_crypto.py",
+          "type": "blob",
+          "git_object_sha": "90b7f469b910585af9dee5da9ade25b6984b734e",
+          "size_bytes": 7608
+        },
+        {
+          "path": "yichen-wecom-operations/README.md",
+          "type": "blob",
+          "git_object_sha": "4178d832a4147531b64c364d947c2903cbee4efe",
+          "size_bytes": 2780
+        },
+        {
+          "path": "yichen-wecom-operations/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "08a6667d53a150fcc022e1054390eb2744a18b1c",
+          "size_bytes": 4366
+        },
+        {
+          "path": "yichen-wecom-operations/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "897f976b5ffc5ea9b0b75e58cbdfc099e01c9f42",
+          "size_bytes": 275
+        },
+        {
+          "path": "yichen-wecom-operations/references/documents.md",
+          "type": "blob",
+          "git_object_sha": "8810b43cba1c5bf231c6a1e303177f99727d3b19",
+          "size_bytes": 2206
+        },
+        {
+          "path": "yichen-wecom-operations/references/meetings.md",
+          "type": "blob",
+          "git_object_sha": "f4020755792cfca187477e7321d274cd0a68ae34",
+          "size_bytes": 1753
+        },
+        {
+          "path": "yichen-wecom-operations/references/todos.md",
+          "type": "blob",
+          "git_object_sha": "0774c298e60accda33e68ca3b339636f4a0e4778",
+          "size_bytes": 1337
+        },
+        {
+          "path": "yichen-wecom-operations/scripts/create_smartpage.py",
+          "type": "blob",
+          "git_object_sha": "fb398d01687da3f243afda7d8ba5cad75f85e3fc",
+          "size_bytes": 9005
+        },
+        {
+          "path": "yichen-wecom-operations/scripts/doctor.py",
+          "type": "blob",
+          "git_object_sha": "0d51d30606e64361b71845542bcf0b4a065514b2",
+          "size_bytes": 2340
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/LICENSE",
+          "type": "blob",
+          "git_object_sha": "46ca5337bac3af80cf38ee3f081e150985732f30",
+          "size_bytes": 2119
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/README.md",
+          "type": "blob",
+          "git_object_sha": "6cf3046140dc2846aa821b366e2f86bd682991f5",
+          "size_bytes": 12963
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "e2c401c38a574050910f946229bf011df1f29fde",
+          "size_bytes": 22043
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/VERSION",
+          "type": "blob",
+          "git_object_sha": "7dea76edb3dc51b6e5e8223e9f941a35c1e364d6",
+          "size_bytes": 6
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "53773fe7c2e6bbcc2f4909426c6493f2b41a0b38",
+          "size_bytes": 468
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/examples/smoke-test.md",
+          "type": "blob",
+          "git_object_sha": "957802e9e48527cab6938467fdb74637ddf941db",
+          "size_bytes": 460
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/requirements.txt",
+          "type": "blob",
+          "git_object_sha": "e376f1feadbdf0571cdfd4eaedbfb5925fbd87c4",
+          "size_bytes": 40
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/scripts/export_x_cookies_from_chrome.py",
+          "type": "blob",
+          "git_object_sha": "848af890b93367aa1ac0fe814566bb6f655d236d",
+          "size_bytes": 6662
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/scripts/parse_markdown.py",
+          "type": "blob",
+          "git_object_sha": "3ac4ed8f4151c1e93a33ef00c16672cfb3bcb81c",
+          "size_bytes": 48399
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/scripts/upload_markdown_to_x_article.py",
+          "type": "blob",
+          "git_object_sha": "a986b33802feb9a6b4c328a33e600e6243402b92",
+          "size_bytes": 240224
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/tests/anchor_normalization_vectors.json",
+          "type": "blob",
+          "git_object_sha": "798017c2d06cab76b41f03e2525365ce4cda87d2",
+          "size_bytes": 6304
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/tests/test_cookie_exporter.py",
+          "type": "blob",
+          "git_object_sha": "2a9fe2cd7f69a02b6e36ca8ed6c7c5ad7913544f",
+          "size_bytes": 1835
+        },
+        {
+          "path": "yichen-x-article-draft-uploader/tests/test_local_contracts.py",
+          "type": "blob",
+          "git_object_sha": "b5fd68c159103a5ecea0233cfdfd50e11fc65943",
+          "size_bytes": 111735
+        },
+        {
+          "path": "yichen-x-slicer/SKILL.md",
+          "type": "blob",
+          "git_object_sha": "5c2addd28d1b03281aa97e8e7e5badfccbc2983b",
+          "size_bytes": 8780
+        },
+        {
+          "path": "yichen-x-slicer/agents/openai.yaml",
+          "type": "blob",
+          "git_object_sha": "09e49678347bd54e0a6d8d34691960ea997cf1e3",
+          "size_bytes": 424
+        },
+        {
+          "path": "yichen-x-slicer/assets/poster.css",
+          "type": "blob",
+          "git_object_sha": "cbba10c4d3ce2a116a75999fed0b445d689a8fa6",
+          "size_bytes": 8870
+        },
+        {
+          "path": "yichen-x-slicer/references/content-routing.md",
+          "type": "blob",
+          "git_object_sha": "72011a4f03d221712c3526ee8f8e9a28967a86e2",
+          "size_bytes": 3255
+        },
+        {
+          "path": "yichen-x-slicer/references/source-only.md",
+          "type": "blob",
+          "git_object_sha": "c434a0c366cd6cd5fb0c3379da65a54200498ffb",
+          "size_bytes": 7169
+        },
+        {
+          "path": "yichen-x-slicer/references/templates.md",
+          "type": "blob",
+          "git_object_sha": "bc41f6489d571e11cbbd54c4163fa946b336b3b9",
+          "size_bytes": 1434
+        },
+        {
+          "path": "yichen-x-slicer/references/video.md",
+          "type": "blob",
+          "git_object_sha": "9c5a9673fb1a53993490e66c246ebbc55e07d194",
+          "size_bytes": 5159
+        },
+        {
+          "path": "yichen-x-slicer/scripts/silent_video.mjs",
+          "type": "blob",
+          "git_object_sha": "4a9fb9ee16e295cacf2420940ba7a81e701b5bc7",
+          "size_bytes": 70909
+        },
+        {
+          "path": "yichen-x-slicer/scripts/test.mjs",
+          "type": "blob",
+          "git_object_sha": "8ec8eec57110ae1dbd1f2d8bb95fe0f64211f4ba",
+          "size_bytes": 78689
+        },
+        {
+          "path": "yichen-x-slicer/scripts/yichen_x_slicer.mjs",
+          "type": "blob",
+          "git_object_sha": "c610272fcde32cfe163818cb608d03b17f204d5d",
+          "size_bytes": 109394
+        }
+      ]
+    }
+  ]
+}

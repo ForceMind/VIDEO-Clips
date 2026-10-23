@@ -9,7 +9,7 @@ This branch is a complete Git snapshot of **VIDEO-Clips' own source** at `c2d902
 - **StepAudio 2.5 ASR:** [StepFun API platform](https://platform.stepfun.com/), an external hosted service, not a third GitHub codebase.
 - **Openverse:** audio discovery API, per-asset licenses apply.
 
-The precise repo commit and tree IDs are in [upstream-sources.json](upstream-sources.json).
+The precise repo commit and tree IDs are in [upstream-sources.json](upstream-sources.json). The [upstream file index](upstream-file-index.json) additionally records 343 individual upstream Git blob entries, their paths, IDs and sizes. The index contains no third-party source text or binary content.
 
 ## Copyright and visibility
 
