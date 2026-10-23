@@ -17,7 +17,55 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Ensure FFmpeg integration is available
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          command -v ffmpeg
+          command -v ffprobe
       - run: python -m pip install -e .
       - run: python -m unittest discover -s tests -v
       - run: video-clips doctor
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Ensure FFmpeg integration is available
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          command -v ffmpeg
+          command -v ffprobe
+      - run: python -m pip install -e .
+      - run: npm ci --no-audit --no-fund
+      - name: Install CJK fonts for real Chinese UI and subtitle screenshots
+        run: sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y fonts-noto-cjk
+      - name: Use runner Chrome or install Chromium
+        run: |
+          if command -v google-chrome >/dev/null; then
+            echo 'VIDEO_CLIPS_BROWSER_CHANNEL=chrome' >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+          fi
+      - run: python tools/smoke_demo.py --out outputs/ui-demo
+      - run: npm run test:ui
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-workbench-browser-evidence
+          path: |
+            test-artifacts/
+            outputs/ui-demo/evidence.json
+            outputs/ui-demo/job/
+          retention-days: 14

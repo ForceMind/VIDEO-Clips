@@ -5,6 +5,7 @@ from dataclasses import asdict
 import hashlib
 import json
 import os
+import math
 from pathlib import Path
 import tempfile
 
@@ -15,6 +16,7 @@ from .plan import parse_plan
 from .render import render
 from .rough_cut import compile_rough_cut, read_cut_decisions, video_metadata
 from .subtitles import write_srt
+from .quality import audio_duration_ms
 
 
 def file_sha256(path: Path) -> str:
@@ -39,10 +41,20 @@ def atomic_json(path: Path, payload: dict):
 def run_agent_pipeline(source, captions, workdir, options: AgentOptions, *,
                        model: ModelConfig | None = None, response_file=None,
                        allow_paid: bool = False, render_output: bool = False,
-                       aspect: str = "source", resume: bool = False) -> dict:
+                       aspect: str = "source", resume: bool = False,
+                       music=None, music_volume: float = 0.15) -> dict:
     options.validate()
     if aspect not in {"source", "16:9", "9:16", "1:1"}:
         raise ValueError("unsupported aspect ratio")
+    if type(music_volume) not in (int, float) or not math.isfinite(music_volume) or not 0 <= music_volume <= 2:
+        raise ValueError("music volume must be finite in 0..2")
+    music_duration = None
+    if music:
+        music = Path(music).expanduser()
+        if music.is_symlink():
+            raise ValueError("music cannot be a symlink")
+        music = music.resolve(strict=True)
+        music_duration = audio_duration_ms(music)
     source = Path(source).expanduser()
     if source.is_symlink():
         raise ValueError("source cannot be a symlink")
@@ -62,6 +74,7 @@ def run_agent_pipeline(source, captions, workdir, options: AgentOptions, *,
     identity = {"source": str(source), "source_sha256": file_sha256(source),
                 "transcript_sha256": digest, "options": asdict(options), "aspect": aspect,
                 "model": asdict(model) if model else None,
+                "music": {"path": str(music), "sha256": file_sha256(music), "volume": music_volume} if music else None,
                 "offline_response_sha256": hashlib.sha256(response_text.encode()).hexdigest() if response_text else None}
     fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
     root = Path(workdir).expanduser()
@@ -106,6 +119,10 @@ def run_agent_pipeline(source, captions, workdir, options: AgentOptions, *,
             width, height = {"16:9": (1280, 720), "9:16": (720, 1280), "1:1": (1080, 1080)}[aspect]
             plan["canvas"].update(width=width, height=height)
         parsed_plan = parse_plan(plan, base_path=root)
+        if music:
+            plan["audio"].append({"source": str(music), "start_ms": 0, "source_start_ms": 0,
+                "duration_ms": min(music_duration, parsed_plan.duration_ms), "volume": music_volume})
+            parsed_plan = parse_plan(plan, base_path=root)
         review["rough_cut"] = cut_report
         review["actual_duration_ms"] = parsed_plan.duration_ms
         review["target_met"] = None if options.target_ms is None else parsed_plan.duration_ms <= options.target_ms

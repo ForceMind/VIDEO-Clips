@@ -16,3 +16,9 @@ upstream/
 *.ogg
 *.opus
 !docs/media/*.mp4
+
+build/
+dist/
+node_modules/
+test-artifacts/
+.video-clips/

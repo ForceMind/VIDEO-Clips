@@ -26,6 +26,9 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="video-clips", description="Local-first automated video editing toolkit")
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="action", required=True)
+    ui = sub.add_parser("ui", help="start a loopback-only local video editing application")
+    ui.add_argument("--workspace", default=".", help="local media/job directory accessible to the UI")
+    ui.add_argument("--port", type=int, default=8765)
     agent = sub.add_parser("auto-edit", help="AI decisions → policy → timeline → optional FFmpeg MP4")
     agent.add_argument("source", help="local original video")
     agent_timings = agent.add_mutually_exclusive_group(required=True)
@@ -49,6 +52,8 @@ def _parser() -> argparse.ArgumentParser:
     agent.add_argument("--resume", action="store_true", help="resume same inputs/settings without repeating cached model call")
     agent.add_argument("--render", action="store_true", help="render output.mp4 with FFmpeg locally")
     agent.add_argument("--aspect", choices=["source", "16:9", "9:16", "1:1"], default="source")
+    agent.add_argument("--music", help="optional authorized local background audio")
+    agent.add_argument("--music-volume", type=float, default=0.15)
     validate = sub.add_parser("validate", help="validate the vendor-neutral edit plan")
     validate.add_argument("plan")
     render_ = sub.add_parser("render", help="render local MP4 with FFmpeg")
@@ -153,7 +158,10 @@ def _timed_cues(*, srt: str | None, step_file: str | None, channel: int | None):
 def main(argv: list[str] | None = None) -> int:
     options = _parser().parse_args(argv)
     try:
-        if options.action == "auto-edit":
+        if options.action == "ui":
+            from .local_ui import serve
+            serve(options.workspace, port=options.port)
+        elif options.action == "auto-edit":
             if options.model_endpoint and not options.model:
                 raise PlanError("--model-endpoint requires --model")
             if options.response and (options.model or options.allow_paid_model):
@@ -165,7 +173,8 @@ def main(argv: list[str] | None = None) -> int:
                 AgentOptions(options.instruction, options.strategy, options.target_ms,
                              tuple(options.protect_term), options.apply_ai_cuts),
                 model=config, response_file=options.response, allow_paid=options.allow_paid_model,
-                render_output=options.render, aspect=options.aspect, resume=options.resume)
+                render_output=options.render, aspect=options.aspect, resume=options.resume,
+                music=options.music, music_volume=options.music_volume)
             print(json.dumps(result, ensure_ascii=False, indent=2))
         elif options.action == "validate":
             plan = load_plan(options.plan)

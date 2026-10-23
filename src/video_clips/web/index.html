@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>VIDEO-Clips · 本地剪辑工作台</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">
+        <span class="brand-mark">▶</span> VIDEO<span>-Clips</span></a
+      >
+      <div class="project-title">
+        剪辑工作台 <span class="local-tag">本地运行</span>
+      </div>
+      <div class="header-actions">
+        <span id="connection" class="muted">连接中</span
+        ><button id="refresh" class="quiet">刷新素材</button
+        ><button id="export-top" class="primary" disabled>导出成片 ↗</button>
+      </div>
+    </header>
+    <main>
+      <aside class="library panel">
+        <div class="panel-heading">
+          <h2>素材库</h2>
+          <button id="upload" class="icon-button" title="导入素材">＋</button>
+        </div>
+        <input id="upload-files" type="file" multiple hidden />
+        <p class="hint">视频、音频、SRT 或带时间戳的 ASR 结果</p>
+        <div id="breadcrumb" class="breadcrumb"></div>
+        <div id="files" class="file-list"></div>
+        <div class="drop-note" id="drop-area">
+          拖入文件<br /><span>文件保存在所选工作目录</span>
+        </div>
+        <div class="library-foot"><span class="dot"></span> 原素材独立保存</div>
+      </aside>
+      <section class="center">
+        <div class="preview panel">
+          <div class="preview-head">
+            <span id="preview-title">素材预览</span>
+            <div class="segmented">
+              <button id="view-source" class="selected">原片</button
+              ><button id="view-output" disabled>成片</button>
+            </div>
+            <span id="canvas-label" class="muted">原始画幅</span>
+          </div>
+          <div class="video-stage">
+            <video id="player" controls preload="metadata"></video>
+            <div id="preview-empty">
+              <div class="empty-play">▶</div>
+              <h2>从一段素材开始</h2>
+              <p>选择视频和时间对齐的字幕，让 AI 帮你整理内容。</p>
+              <button id="empty-import">导入素材</button>
+            </div>
+          </div>
+          <div class="preview-status">
+            <span id="source-label">尚未选择视频</span
+            ><span id="time-display">00:00 / 00:00</span>
+          </div>
+        </div>
+        <div class="timeline panel">
+          <div class="panel-heading">
+            <h2>时间线 <span id="clip-count" class="badge">0 个片段</span></h2>
+            <span class="muted">点击片段跳转</span>
+          </div>
+          <div class="ruler">
+            <span>00:00</span><span id="ruler-mid">—</span
+            ><span id="ruler-end">—</span>
+          </div>
+          <div class="track-row">
+            <span>视频</span>
+            <div id="video-track" class="track">
+              <p>生成剪辑后显示保留片段</p>
+            </div>
+          </div>
+          <div class="track-row">
+            <span>字幕</span>
+            <div id="caption-track" class="track caption-track"></div>
+          </div>
+          <div class="track-row">
+            <span>音乐</span>
+            <div id="music-track" class="track music-track"></div>
+          </div>
+        </div>
+        <div class="transcript panel">
+          <div class="panel-heading">
+            <div class="tabs">
+              <button id="tab-transcript" class="active">转写与字幕</button
+              ><button id="tab-review">
+                删留审核 <span id="review-count" class="badge">0</span>
+              </button>
+            </div>
+            <div class="row-actions">
+              <span id="transcript-label" class="muted"
+                >点击素材库中的字幕导入</span
+              ><button id="apply-review" class="quiet" hidden>
+                按审核结果生成新版本
+              </button>
+            </div>
+          </div>
+          <div id="cues" class="cue-list">
+            <div class="empty-small">
+              导入 SRT 或已完成的 Step 文件识别结果。<br />字幕文字和时间可编辑；重新运行会使用修改后的内容。
+            </div>
+          </div>
+          <div id="review-list" class="cue-list" hidden></div>
+        </div>
+      </section>
+      <aside class="inspector panel">
+        <div class="panel-heading">
+          <h2><span class="spark">✦</span> AI 剪辑</h2>
+          <span class="badge">Agent</span>
+        </div>
+        <label for="instruction">你想怎样剪辑？</label
+        ><textarea
+          id="instruction"
+          rows="3"
+          placeholder="例如：删除口误和重复，保留重要观点，剪成一段教程短视频。"
+        >
+删除重复和口误，保留完整观点与关键上下文。</textarea
+        ><label>剪辑策略</label>
+        <div class="strategy-grid">
+          <button data-strategy="conservative">
+            保守<span>少删，保留信息</span></button
+          ><button data-strategy="standard" class="selected">
+            标准<span>精简，改善节奏</span></button
+          ><button data-strategy="aggressive">
+            精炼<span>聚焦核心观点</span></button
+          ><button data-strategy="highlights">
+            高光<span>筛选精彩内容</span>
+          </button>
+        </div>
+        <div class="two-col">
+          <div>
+            <label for="target">目标时长 / 秒</label
+            ><input id="target" type="number" min="1" placeholder="可选" />
+          </div>
+          <div>
+            <label for="aspect">输出画幅</label
+            ><select id="aspect">
+              <option value="source">原始画幅</option>
+              <option value="9:16">9:16 竖屏</option>
+              <option value="16:9">16:9 横屏</option>
+              <option value="1:1">1:1 方形</option>
+            </select>
+          </div>
+        </div>
+        <label for="protected-terms">保护的产品名或术语</label
+        ><input id="protected-terms" placeholder="多个名称用逗号分隔" />
+        <p class="hint">数字默认保护；目标时长不覆盖内容保护规则。</p>
+        <label for="music-select">本地背景音乐</label
+        ><select id="music-select">
+          <option value="">不添加</option>
+        </select>
+        <div class="volume-line">
+          <span>音量</span
+          ><input
+            id="music-volume"
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.15"
+          /><output id="volume-value">15%</output>
+        </div>
+        <details id="model-settings" open>
+          <summary>模型连接</summary>
+          <label for="provider-mode">输入来源</label
+          ><select id="provider-mode">
+            <option value="model">兼容模型 API</option>
+            <option value="offline">已有 AI 决策 JSON</option>
+          </select>
+          <div id="remote-fields">
+            <label for="endpoint">完整接口地址</label
+            ><input
+              id="endpoint"
+              type="url"
+              placeholder="https://…/v1/chat/completions"
+            /><label for="model">模型 ID</label
+            ><input id="model" placeholder="填写服务商模型名称" />
+            <p class="hint">密钥读取启动环境的 VIDEO_CLIPS_MODEL_KEY。</p>
+            <label class="check"
+              ><input
+                id="allow-paid"
+                type="checkbox"
+              />允许本次模型请求（可能计费）</label
+            >
+          </div>
+          <div id="offline-fields" hidden>
+            <label for="response-select">Agent 决策文件</label
+            ><select id="response-select">
+              <option value="">选择已导入的 JSON</option>
+            </select>
+          </div>
+        </details>
+        <label class="check"
+          ><input
+            id="apply-cuts"
+            type="checkbox"
+          />自动应用通过保护规则的删除</label
+        ><button id="run" class="primary run-button">✦ 生成剪辑并渲染</button>
+        <p class="hint centered">未开启自动应用时，删除建议等待审核。</p>
+        <div id="job-status" class="job-status">
+          <span class="dot"></span><span>准备就绪</span>
+        </div>
+        <div id="quality-info" class="quality-info"></div>
+        <div id="downloads" class="downloads" hidden></div>
+      </aside>
+    </main>
+    <footer>
+      <div>
+        <span class="dot"></span>
+        <span id="status-text">就绪 · 素材和任务保存在本地工作目录</span>
+      </div>
+      <div>
+        <label for="job-select">任务</label
+        ><select id="job-select">
+          <option value="">尚无任务</option></select
+        ><button id="resume" class="quiet" hidden>恢复任务</button>
+      </div>
+    </footer>
+    <div id="toast" role="status" hidden></div>
+  </body>
+</html>

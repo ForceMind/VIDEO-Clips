@@ -12,6 +12,14 @@ from .plan import Plan, PlanError
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 
 
+def audio_duration_ms(path: Path, *, ffprobe="ffprobe") -> int:
+    data = _probe(path, ffprobe)
+    streams = [s for s in data.get("streams", []) if s.get("codec_type") == "audio"]
+    if not streams:
+        raise PlanError("music source has no audio stream")
+    return int(_duration(streams[0], data.get("format", {})) * 1000)
+
+
 def _probe(path: Path, ffprobe: str, *, count_frames=False) -> dict:
     command = [ffprobe, "-v", "error"]
     if count_frames:

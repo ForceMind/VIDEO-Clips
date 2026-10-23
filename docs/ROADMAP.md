@@ -23,3 +23,7 @@
 - [x] Executable transcript-grounded model Agent, four strategies, protected terms/numbers, explicit auto-apply and local FFmpeg pipeline
 - [x] Provider-neutral compatible HTTP transport, token/response limits, cached single submission and resumable job manifest
 - [ ] Automatic async timestamped ASR submission/query (completed file-ASR import is implemented)
+
+- [x] Loopback local UI: import/preview, timed-caption editing, Agent settings, music, task stages, sequential queue, review/restoration versions and real artifact downloads
+- [x] Reproducible synthetic-media smoke demo; backend/auth/range/job-version tests
+- [ ] Browser interaction and responsive screenshots: CI gate configured; await actual run before declaring verified
