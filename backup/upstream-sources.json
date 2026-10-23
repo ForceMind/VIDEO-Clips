@@ -1,0 +1,56 @@
+{
+  "schema": "video-clips-upstream-lock/v1",
+  "captured_utc": "2026-10-23",
+  "backup_branch": "backup/source-snapshot-20261023",
+  "local_project": {
+    "repository": "ForceMind/VIDEO-Clips",
+    "branch": "main",
+    "commit": "c2d902ee6b4e7e9ab2e0346419a90a565d5ea229",
+    "tree": "dc3e70ad96b3d8dbf6af4ac98fb7554823cdeb76"
+  },
+  "sources": [
+    {
+      "role": "headless_engine_and_preserved_editing_skill",
+      "repository": "wtcbill/jianying-headless",
+      "url": "https://github.com/wtcbill/jianying-headless",
+      "commit": "27c2627bbd0fccc8484000f32e9d66a820f4b698",
+      "tree": "0e92e3ead59fd2a982d976c3d3e0a1efd4648345",
+      "paths": [
+        "engine/",
+        "bridge/",
+        "skills/yichen-jianying-edit/"
+      ],
+      "license": "Personal Learning and Non-Commercial Use License; no unauthorized public redistribution"
+    },
+    {
+      "role": "asr_router_and_skills",
+      "repository": "mcncarl/yichen-skills",
+      "url": "https://github.com/mcncarl/yichen-skills",
+      "commit": "6e0c0ae43b5fd168040b8eb5193392e47b6f6301",
+      "tree": "eef82fd210777a39571a4a21b96513eb57a982b5",
+      "paths": [
+        "yichen-asr/",
+        "yichen-volc-asr/"
+      ],
+      "note": "At pinned HEAD the yichen-jianying-edit folder was removed; preserved version is in the first repository",
+      "license": "Personal Learning and Non-Commercial Use License; no unauthorized public redistribution"
+    },
+    {
+      "role": "hosted_stepaudio_2_5_asr",
+      "url": "https://platform.stepfun.com/",
+      "note": "Hosted service; not a source-code GitHub repository"
+    },
+    {
+      "role": "openverse_search",
+      "url": "https://openverse.org/",
+      "note": "Search API, not a third-party code vendoring target"
+    }
+  ],
+  "missing_original": {
+    "repository": "mcncarl/jianying-headless",
+    "url": "https://github.com/mcncarl/jianying-headless",
+    "status": "404 to public reader",
+    "replacement": "wtcbill/jianying-headless"
+  },
+  "legal_note": "The public backup branch contains only VIDEO-Clips authored code and source metadata. Run the offline backup helper on your personal machine to store separately obtained upstream Git bundles privately; do not upload proprietary/noncommercial sources into the public VIDEO-Clips repository without permission."
+}
