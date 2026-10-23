@@ -17,3 +17,6 @@ video-clips = "video_clips.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+video_clips = ["web/*.html", "web/*.css", "web/*.js"]

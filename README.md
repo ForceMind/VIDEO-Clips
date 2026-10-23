@@ -22,6 +22,10 @@ VIDEO-Clips connects a **vendor-neutral, executable FFmpeg timeline** with optio
 | Native Jianying 11.6 headless MP4 export | Not supported | upstream itself requires UI export for 11.6 |
 | AI semantic clip selection | Implemented Agent + policy + FFmpeg pipeline | configurable compatible model API, four strategies, exact cue evidence, review/auto-apply, cached recovery; forced alignment and raw-video async ASR submission still pending |
 
+## Local editing workbench
+
+Run `python -m video_clips ui --workspace /path/to/media`. The authenticated loopback app connects real media preview, editable timed captions, AI settings, background music, sequential jobs, versioned cut review/restoration and verified exports. See [local UI guide](docs/LOCAL-UI.md). It is a local application; no hosted site is created.
+
 ## Quick start
 
 Requires **Python 3.10+**, `ffmpeg` and `ffprobe` on `PATH`.

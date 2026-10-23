@@ -1,0 +1,6 @@
+{
+  "name": "video-clips-browser-tests",
+  "private": true,
+  "scripts": {"test:ui": "node tools/browser_smoke.cjs"},
+  "devDependencies": {"playwright": "1.62.1"}
+}
