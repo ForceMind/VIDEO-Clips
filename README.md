@@ -180,5 +180,6 @@ The unit suite includes FFmpeg integration rendering against synthetic locally g
 - [Integration architecture and acceptance boundaries](docs/INTEGRATION.md)
 - [Source versions and redistribution limitations](docs/SOURCES-AND-LICENSES.md)
 - [Delivery roadmap](docs/ROADMAP.md)
+- [Snapshot and private upstream backup guidance](docs/BACKUP.md)
 
 Only this repository's independently authored code is licensed under the [MIT License](LICENSE). Third-party sources and media retain their own terms.
