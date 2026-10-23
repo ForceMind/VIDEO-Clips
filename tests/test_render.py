@@ -44,3 +44,53 @@ class RenderTests(unittest.TestCase):
                                "duration_ms": 1000, "source_start_ms": 0, "volume": 0.2}]
         result = render(self._load(), self.root / "out2.mp4")
         self.assertAlmostEqual(result.duration_s, 1.5, delta=0.2)
+
+    def test_output_cannot_replace_original_or_hardlink(self):
+        from video_clips.pipeline import file_sha256
+        from video_clips.plan import PlanError
+        original = file_sha256(self.source)
+        with self.assertRaisesRegex(PlanError, 'source media'):
+            render(self._load(), self.source, overwrite=True)
+        link = self.root/'hardlink.mp4'
+        try:
+            link.hardlink_to(self.source)
+        except OSError:
+            self.skipTest('hard links unavailable')
+        with self.assertRaisesRegex(PlanError, 'source media'):
+            render(self._load(), link, overwrite=True)
+        self.assertEqual(file_sha256(self.source), original)
+
+    def test_source_range_beyond_media_rejected_before_output(self):
+        from video_clips.plan import PlanError
+        self.data['video'][0]['source_start_ms'] = 1800
+        with self.assertRaisesRegex(PlanError, 'exceeds media duration'):
+            render(self._load(), self.root/'too-long.mp4')
+        self.assertFalse((self.root/'too-long.mp4').exists())
+
+    def test_many_non_frame_aligned_clips_do_not_accumulate_frame_drift(self):
+        from video_clips.quality import verify_output
+        self.data['video'] = [{'source':'source.mp4','start_ms':i*101,'source_start_ms':0,
+                               'duration_ms':101} for i in range(24)]
+        plan = self._load()
+        result = render(plan,self.root/'many.mp4')
+        quality = verify_output(plan,result.path,decode=False)
+        self.assertEqual(quality['decoded_frames'], round(2.424*12))
+        self.assertAlmostEqual(quality['video_duration_s'],2.424,delta=1/12)
+
+    def test_quality_rejects_mismatched_canvas(self):
+        from video_clips.quality import verify_output
+        from video_clips.plan import PlanError
+        output = render(self._load(), self.root/'quality.mp4').path
+        self.data['canvas']['width'] = 640
+        with self.assertRaisesRegex(PlanError, 'canvas'):
+            verify_output(self._load(),output,decode=False)
+
+    def test_speed_and_aspect_are_verified_on_real_output(self):
+        from video_clips.quality import verify_output
+        self.data['video'][0].update(speed=2.0,duration_ms=750)
+        self.data['canvas'].update(width=240,height=320)
+        plan = self._load()
+        result=render(plan,self.root/'vertical.mp4')
+        quality=verify_output(plan,result.path,decode=False)
+        self.assertEqual((quality['width'],quality['height']),(240,320))
+        self.assertEqual(quality['decoded_frames'],9)

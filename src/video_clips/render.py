@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 from .plan import Clip, Plan, PlanError
 from .subtitles import write_srt
+from .quality import check_sources, verify_output
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,7 @@ class RenderResult:
     width: int
     height: int
     fps: int
+    quality: dict | None = None
 
 
 def _run(args: list[str], *, timeout: int = 600) -> subprocess.CompletedProcess:
@@ -30,6 +32,8 @@ def _run(args: list[str], *, timeout: int = 600) -> subprocess.CompletedProcess:
         raise RuntimeError(f"binary missing: {args[0]}") from e
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"{args[0]} failed: {e.stderr[-4000:]}") from e
+    except subprocess.TimeoutExpired as e:
+        raise RuntimeError(f"{args[0]} timed out") from e
 
 
 def has_audio(path: Path, ffprobe: str = "ffprobe") -> bool:
@@ -78,27 +82,37 @@ def build_command(plan: Plan, target: Path, scratch: Path, *, ffmpeg: str = "ffm
     last = 0
     for n, clip in enumerate(plan.videos):
         if clip.start_ms > last:
-            duration = clip.start_ms - last
+            frames = round(clip.start_ms * plan.fps / 1000) - round(last * plan.fps / 1000)
             name = f"gap{n}"
-            graph.append(f"color=c=black:s={plan.width}x{plan.height}:r={plan.fps}:d={_time(duration)},format=yuv420p[{name}]")
-            vlabels.append(f"[{name}]")
+            if frames:
+                graph.append(f"color=c=black:s={plan.width}x{plan.height}:r={plan.fps},trim=end_frame={frames},setpts=N/({plan.fps}*TB),format=yuv420p[{name}]")
+                vlabels.append(f"[{name}]")
         idx = input_ids[clip]
         start = _time(clip.source_start_ms)
         input_length = _time(clip.duration_ms * clip.speed)
         name = f"v{n}"
+        frames = round(clip.end_ms * plan.fps / 1000) - round(clip.start_ms * plan.fps / 1000)
+        if frames < 1:
+            raise PlanError("video clip is shorter than one output frame")
         graph.append(
             f"[{idx}:v]trim=start={start}:duration={input_length},"
             f"setpts=(PTS-STARTPTS)/{clip.speed:.7f},"
-            f"fps={plan.fps},scale={plan.width}:{plan.height}:force_original_aspect_ratio=decrease,"
+            f"fps={plan.fps},tpad=stop_mode=clone:stop_duration={2 / plan.fps:.9f},"
+            f"trim=end_frame={frames},setpts=N/({plan.fps}*TB),"
+            f"scale={plan.width}:{plan.height}:force_original_aspect_ratio=decrease,"
             f"pad={plan.width}:{plan.height}:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p[{name}]"
         )
         vlabels.append(f"[{name}]")
         last = clip.end_ms
     if last < plan.duration_ms:
-        tail = plan.duration_ms - last
-        graph.append(f"color=c=black:s={plan.width}x{plan.height}:r={plan.fps}:d={_time(tail)},format=yuv420p[tail]")
-        vlabels.append("[tail]")
-    graph.append("".join(vlabels) + f"concat=n={len(vlabels)}:v=1:a=0[vbase]")
+        frames = round(plan.duration_ms * plan.fps / 1000) - round(last * plan.fps / 1000)
+        if frames:
+            graph.append(f"color=c=black:s={plan.width}x{plan.height}:r={plan.fps},trim=end_frame={frames},setpts=N/({plan.fps}*TB),format=yuv420p[tail]")
+            vlabels.append("[tail]")
+    # Single-frame concat inputs have no second timestamp from which to infer
+    # their duration. Rebuild the continuous clock from the already bounded
+    # frame counts, including explicit gap frames; otherwise short clips vanish.
+    graph.append("".join(vlabels) + f"concat=n={len(vlabels)}:v=1:a=0,setpts=N/({plan.fps}*TB)[vbase]")
     if plan.captions:
         subtitle = write_srt(plan.captions, scratch / "captions.srt")
         # scratch is a tool-created temp directory; never interpolate user-provided text.
@@ -147,6 +161,10 @@ def render(plan: Plan, output: str | Path, *, overwrite: bool = False,
         raise FileExistsError(f"output exists, use --overwrite explicitly: {target}")
     if not target.parent.is_dir():
         raise PlanError("output directory must already exist")
+    for clip in (*plan.videos, *plan.audios):
+        if target == clip.path or (target.exists() and target.samefile(clip.path)):
+            raise PlanError("output cannot overwrite a source media file, including hard links")
+    check_sources(plan, ffprobe=ffprobe)
     with tempfile.TemporaryDirectory(prefix="video-clips-") as work:
         scratch = Path(work)
         staged = scratch / "render.mp4"
@@ -154,11 +172,8 @@ def render(plan: Plan, output: str | Path, *, overwrite: bool = False,
         _run(cmd, timeout=timeout)
         if not staged.is_file() or staged.stat().st_size == 0:
             raise RuntimeError("renderer did not create nonempty MP4")
-        metadata = _run([ffprobe, "-v", "error", "-show_entries", "format=duration",
-                         "-of", "json", str(staged)], timeout=40)
-        duration = float(json.loads(metadata.stdout)["format"]["duration"])
-        if abs(duration - plan.duration_ms / 1000) > max(0.25, 2 / plan.fps):
-            raise RuntimeError(f"output duration mismatch: {duration} sec")
+        quality = verify_output(plan, staged, ffmpeg=ffmpeg, ffprobe=ffprobe)
+        duration = quality["duration_s"]
         # Avoid replacing user files without explicit overwrite. Stage on same directory
         # for atomic rename and copy the checked artifact after validation.
         if target.exists() and not overwrite:
@@ -175,4 +190,4 @@ def render(plan: Plan, output: str | Path, *, overwrite: bool = False,
                 os.replace(temporary_target, target)
             finally:
                 temporary_target.unlink(missing_ok=True)
-    return RenderResult(target, duration, plan.width, plan.height, plan.fps)
+    return RenderResult(target, duration, plan.width, plan.height, plan.fps, quality)

@@ -123,6 +123,7 @@ def run_agent_pipeline(source, captions, workdir, options: AgentOptions, *,
             atomic_json(state_path, state)
             # Rendering is local and repeatable. Only replace this job's derived output.
             result = render(parsed_plan, output, overwrite=resume)
+            atomic_json(root / "quality.json", result.quality)
             state["output_sha256"] = file_sha256(result.path)
             state["stage"] = "completed"
             atomic_json(state_path, state)

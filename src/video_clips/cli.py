@@ -175,7 +175,8 @@ def main(argv: list[str] | None = None) -> int:
                              ensure_ascii=False, indent=2))
         elif options.action == "render":
             result = render(load_plan(options.plan), options.out, overwrite=options.overwrite)
-            print(json.dumps({"output": str(result.path), "duration_s": result.duration_s}, indent=2))
+            print(json.dumps({"output": str(result.path), "duration_s": result.duration_s,
+                              "quality": result.quality}, indent=2))
         elif options.action == "captions":
             plan = load_plan(options.plan)
             if not plan.captions:
