@@ -49,6 +49,8 @@ jobs:
           command -v ffprobe
       - run: python -m pip install -e .
       - run: npm ci --no-audit --no-fund
+      - name: Install CJK fonts for real Chinese UI and subtitle screenshots
+        run: sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y fonts-noto-cjk
       - name: Use runner Chrome or install Chromium
         run: |
           if command -v google-chrome >/dev/null; then

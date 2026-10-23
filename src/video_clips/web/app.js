@@ -585,11 +585,14 @@ $("#export-top").onclick = () => {
     a.click();
   }
 };
-$("#player").ontimeupdate = () =>
+const updatePlayerClock = () =>
   ($("#time-display").textContent =
     time($("#player").currentTime * 1000) +
     " / " +
     time(($("#player").duration || 0) * 1000));
+$("#player").ontimeupdate = updatePlayerClock;
+$("#player").onloadedmetadata = updatePlayerClock;
+$("#player").ondurationchange = updatePlayerClock;
 async function init() {
   if (!token) {
     $("#connection").textContent = "需要会话链接";

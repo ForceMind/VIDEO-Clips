@@ -64,6 +64,11 @@ fs.mkdirSync(artifacts, { recursive: true });
     const before = await page.evaluate(() => detail.plan.captions.length);
     if (before !== 3) throw Error("expected 3 output captions, got " + before);
     await page.click("#view-output");
+    await page.waitForFunction(() => document.querySelector("#player").readyState >= 1);
+    await page.waitForFunction(() => !document.querySelector("#time-display").textContent.endsWith("/ 00:00"));
+    await page.evaluate(() => { document.querySelector("#player").currentTime = 0.5; });
+    await page.waitForFunction(() => !document.querySelector("#player").seeking);
+    await page.locator("#toast").waitFor({ state: "hidden" });
     await page.screenshot({
       path: path.join(artifacts, "desktop.png"),
       fullPage: true,
@@ -84,6 +89,7 @@ fs.mkdirSync(artifacts, { recursive: true });
     if (fs.statSync(path.join(artifacts, "ui-export.mp4")).size < 1000)
       throw Error("empty UI export");
     await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator("#toast").waitFor({ state: "hidden" });
     await page.screenshot({
       path: path.join(artifacts, "mobile.png"),
       fullPage: true,
@@ -99,7 +105,8 @@ fs.mkdirSync(artifacts, { recursive: true });
         {
           desktop: "1440x1040",
           mobile: "390x844",
-          browser: "Chromium headless",
+          browser: process.env.VIDEO_CLIPS_BROWSER_CHANNEL || "chromium",
+          browser_version: browser.version(),
           browser_errors: errors,
           initial_captions: before,
           restored_captions: after,
