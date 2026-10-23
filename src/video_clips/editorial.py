@@ -29,7 +29,8 @@ def _cues(captions: Sequence[Caption]) -> list[dict]:
     for index, cue in enumerate(captions, 1):
         if not isinstance(cue, Caption):
             raise EditorialError("all cues must be timed Caption records")
-        if not cue.text.strip() or len(cue.text) > 500 or cue.start_ms < 0 or cue.duration_ms <= 0:
+        if (not isinstance(cue.text, str) or type(cue.start_ms) is not int or type(cue.duration_ms) is not int
+                or not cue.text.strip() or len(cue.text) > 500 or cue.start_ms < 0 or cue.duration_ms <= 0):
             raise EditorialError("caption text or times are invalid")
         if cue.start_ms < previous_end or cue.end_ms > 21_600_000:
             raise EditorialError("transcript cues must be chronological and nonoverlapping")

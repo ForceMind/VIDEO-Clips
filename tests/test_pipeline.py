@@ -83,3 +83,12 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             run_agent_pipeline(self.source,self.cues,self.job,self.options,response_file=self.response,resume=True)
         self.assertTrue((self.job/'.running').exists())
+
+
+    def test_missing_subtitle_filter_stops_before_any_model_request(self):
+        with CompatibleServer() as server, patch('video_clips.pipeline.require_subtitle_filter', side_effect=ValueError('missing subtitles/libass')):
+            with self.assertRaisesRegex(ValueError, 'libass'):
+                run_agent_pipeline(self.source,self.cues,self.job,self.options,model=server.config,
+                    allow_paid=True,render_output=True)
+            self.assertEqual(server.calls,[])
+            self.assertFalse(self.job.exists())

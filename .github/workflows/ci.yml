@@ -5,31 +5,76 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.11', '3.13']
+        include:
+          - os: ubuntu-latest
+            python: '3.10'
+          - os: windows-latest
+            python: '3.13'
+          - os: macos-latest
+            python: '3.13'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Ensure FFmpeg integration is available
+        timeout-minutes: 4
+        if: runner.os == 'Linux'
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
-            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+            # Some hosted regions throttle the Azure mirror to a few kB/s.
+            # Packages remain verified by apt against the official Ubuntu archive.
+            if [ -f /etc/apt/apt-mirrors.txt ]; then
+              sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+            fi
+            sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
+            sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install --no-install-recommends -y ffmpeg
           fi
           command -v ffmpeg
           command -v ffprobe
+      - name: Install full FFmpeg with subtitles on macOS runner
+        if: runner.os == 'macOS'
+        run: |
+          brew install ffmpeg-full
+          echo "$(brew --prefix ffmpeg-full)/bin" >> "$GITHUB_PATH"
+      - name: Install FFmpeg on Windows runner
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
+            choco install ffmpeg --no-progress --yes
+          }
+          Get-Command ffmpeg
+          Get-Command ffprobe
       - run: python -m pip install -e .
       - run: python -m unittest discover -s tests -v
       - run: video-clips doctor
+      - run: python -m pip wheel --no-deps --wheel-dir dist .
+      - run: python tools/check_wheel.py dist
+      - run: python tools/smoke_demo.py --out outputs/ci-smoke
+      - run: python tools/start.py --workspace outputs/ci-smoke --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package-and-render-${{ runner.os }}-${{ matrix.python }}
+          path: |
+            dist/*.whl
+            outputs/ci-smoke/evidence.json
+            outputs/ci-smoke/job/
+          retention-days: 14
   browser:
+    name: Browser and Linux Python 3.13
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,14 +85,21 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Ensure FFmpeg integration is available
+        timeout-minutes: 4
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
-            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+            # Some hosted regions throttle the Azure mirror to a few kB/s.
+            # Packages remain verified by apt against the official Ubuntu archive.
+            if [ -f /etc/apt/apt-mirrors.txt ]; then
+              sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+            fi
+            sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
+            sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install --no-install-recommends -y ffmpeg
           fi
           command -v ffmpeg
           command -v ffprobe
       - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v
       - run: npm ci --no-audit --no-fund
       - name: Install CJK fonts for real Chinese UI and subtitle screenshots
         run: sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y fonts-noto-cjk

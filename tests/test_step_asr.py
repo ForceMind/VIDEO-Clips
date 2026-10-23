@@ -48,12 +48,15 @@ class ASRTests(unittest.TestCase):
             path.write_bytes(b"fake-audio")
             output = root / "done.json"
             response = FakeResponse([b'data: {"type":"transcript.text.done","text":"test","usage":{}}\n', b'\n'])
-            with patch("video_clips.step_asr.urllib.request.urlopen", return_value=response) as open_:
+            with patch("video_clips.step_asr._bytes_from_media", return_value=(b"normalized", ".mp3")), patch("video_clips.step_asr.urllib.request.urlopen", return_value=response) as open_:
                 result = transcribe(path, output, api_key="test-key")
                 self.assertEqual(result["text"], "test")
                 self.assertEqual(open_.call_count, 1)
                 self.assertEqual(open_.call_args[0][0].full_url, ENDPOINT)
                 transcribe(path, output, api_key="test-key")
+                self.assertEqual(open_.call_count, 1)
+                with self.assertRaisesRegex(ASRError, "language"):
+                    transcribe(path, output, api_key="test-key", language="en")
                 self.assertEqual(open_.call_count, 1)
             self.assertFalse((root / "done.json.pending.json").exists())
 
@@ -63,10 +66,35 @@ class ASRTests(unittest.TestCase):
             path.write_bytes(b"fake-audio")
             out = Path(temp) / "result.json"
             response = FakeResponse([b'data: {"type":"transcript.text.delta","delta":"incomplete"}\n'])
-            with patch("video_clips.step_asr.urllib.request.urlopen", return_value=response) as open_:
+            with patch("video_clips.step_asr._bytes_from_media", return_value=(b"normalized", ".mp3")), patch("video_clips.step_asr.urllib.request.urlopen", return_value=response) as open_:
                 with self.assertRaises(ASRError):
                     transcribe(path, out, api_key="test-key")
                 self.assertTrue((Path(temp) / "result.json.pending.json").exists())
                 with self.assertRaisesRegex(ASRError, "previous request"):
                     transcribe(path, out, api_key="test-key")
                 self.assertEqual(open_.call_count, 1)
+
+
+class NormalizationTests(unittest.TestCase):
+    def test_audio_duration_limit_fails_before_normalization(self):
+        from video_clips.step_asr import _bytes_from_media
+        with patch('video_clips.step_asr.audio_duration_ms', return_value=1800001), patch('video_clips.step_asr.subprocess.run') as process:
+            with self.assertRaisesRegex(ASRError, '30 minutes'):
+                _bytes_from_media(Path('long.mp3'))
+            process.assert_not_called()
+
+    @unittest.skipUnless(__import__('shutil').which('ffmpeg') and __import__('shutil').which('ffprobe'), 'FFmpeg unavailable')
+    def test_real_stereo_input_is_normalized_to_declared_rate_and_channels(self):
+        import subprocess
+        from video_clips.step_asr import _bytes_from_media
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp); source=root/'stereo.wav'
+            subprocess.run(['ffmpeg','-v','error','-f','lavfi','-i','sine=frequency=440:sample_rate=44100:duration=1',
+                '-ac','2',str(source)],check=True,capture_output=True)
+            audio,suffix=_bytes_from_media(source)
+            self.assertEqual(suffix,'.mp3')
+            normalized=root/'normalized.mp3';normalized.write_bytes(audio)
+            probe=subprocess.run(['ffprobe','-v','error','-show_entries','stream=sample_rate,channels','-of','json',
+                str(normalized)],check=True,capture_output=True,text=True)
+            stream=json.loads(probe.stdout)['streams'][0]
+            self.assertEqual((stream['sample_rate'],stream['channels']),('16000',1))

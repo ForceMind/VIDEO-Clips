@@ -8,6 +8,7 @@ import os
 import math
 from pathlib import Path
 import tempfile
+import time
 
 from .agent import AgentOptions, agent_request, compile_agent_decisions, strict_json
 from .editorial import transcript_sha256
@@ -17,6 +18,7 @@ from .render import render
 from .rough_cut import compile_rough_cut, read_cut_decisions, video_metadata
 from .subtitles import write_srt
 from .quality import audio_duration_ms
+from .dependencies import require_subtitle_filter
 
 
 def file_sha256(path: Path) -> str:
@@ -33,7 +35,17 @@ def atomic_json(path: Path, payload: dict):
         with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
             json.dump(payload, stream, ensure_ascii=False, indent=2)
             stream.write("\n")
-        os.replace(name, path)
+        # Windows readers/scanners can briefly hold a destination without
+        # FILE_SHARE_DELETE. Retry only the local metadata swap, never a model
+        # request, and leave the old manifest intact on persistent failure.
+        for attempt in range(8):
+            try:
+                os.replace(name, path)
+                break
+            except PermissionError as exc:
+                if getattr(exc, "winerror", None) not in {5, 32, 33} or attempt == 7:
+                    raise
+                time.sleep(min(0.01 * 2 ** attempt, 0.25))
     finally:
         Path(name).unlink(missing_ok=True)
 
@@ -63,6 +75,8 @@ def run_agent_pipeline(source, captions, workdir, options: AgentOptions, *,
     # Validate transcript AND compile feasibility before any potentially paid call.
     digest = transcript_sha256(captions)
     compile_rough_cut(source, captions, **metadata)
+    if render_output:
+        require_subtitle_filter()
     if (model is None) == (response_file is None):
         raise ValueError("choose exactly one model configuration or offline response file")
     response_text = None

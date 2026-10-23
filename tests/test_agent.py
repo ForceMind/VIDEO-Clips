@@ -91,5 +91,5 @@ class AgentTests(unittest.TestCase):
         for raw in ['{"x":1,"x":2}', '{"x":NaN}', '```json\n{}\n```']:
             with self.assertRaises(EditorialError): strict_json(raw)
         for options in [AgentOptions(''), AgentOptions('Edit', 'unknown'), AgentOptions('Edit', target_ms=True),
-                        AgentOptions('Edit', protected_terms=('',))]:
+                        AgentOptions('Edit', protected_terms=('',)), AgentOptions('Edit', strategy=[])]:
             with self.assertRaises(EditorialError): agent_request(self.cues, options)

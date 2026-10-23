@@ -24,6 +24,8 @@ class ModelConfig:
     timeout: int = 180
 
     def validate(self):
+        if not isinstance(self.endpoint, str):
+            raise ValueError("model endpoint must be a URL string")
         url = urllib.parse.urlsplit(self.endpoint)
         if (url.scheme not in {"https", "http"} or not url.hostname or url.username or url.password
                 or url.query or url.fragment):
@@ -36,7 +38,7 @@ class ModelConfig:
             raise ValueError("max_tokens must be 256..64000")
         if type(self.timeout) is not int or not 1 <= self.timeout <= 600:
             raise ValueError("model timeout must be 1..600 seconds")
-        if not self.key_env or not self.key_env.isidentifier():
+        if not isinstance(self.key_env, str) or not self.key_env or not self.key_env.isidentifier():
             raise ValueError("key_env must name an environment variable")
 
 

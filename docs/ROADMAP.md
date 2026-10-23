@@ -1,29 +1,37 @@
-# Roadmap
+# Roadmap — 0.2.0a1
 
-- [x] Independent Python package and CLI
-- [x] Validate JSON edit plans, immutable media paths and non-overlapping video clips
-- [x] Local FFmpeg cutting, timeline gaps, speed, audio mix, SRT burn and MP4 export
-- [x] Direct StepAudio 2.5 ASR text-only SSE adapter with source-bound result caching and no automatic retry
-- [x] Openverse audio metadata/CC filters
-- [x] External Jianying adapter and basic-plan conversion with native safety gates left intact
-- [x] External yichen-asr router adapter
-- [x] Offline tests and CI
-- [x] Offline Step file-ASR utterance-timestamp result to SRT importer, with multichannel and overlap guards
-- [x] Offline SRT/Step file-ASR speech-to-edit rough-cut compiler with frame-aligned timings, caption remapping, review report and explicit protected-number exclusions
-- [ ] Step file-ASR paid submit/resume/query route and hardened long-running task recovery (requires live provider verification)
-- [x] Transcript-bound AI editorial brief and approved-decision compiler with audit trail and numeric-content guard
-- [ ] Agent semantic cut planner with keep/delete explanations and protected-number/sentence windows
-- [ ] Forced alignment and word-level caption generation (do not fabricate from text-only ASR)
-- [ ] Video/B-roll overlay compositing, keyframes, transitions and richer title styles in cross-platform renderer
-- [ ] Openverse audio asset download with verification, attribution manifest and explicit license approval
-- [ ] Mac Jianying native compatibility acceptance matrix with authorized runtime; tests for 11.4/11.5/11.6
-- [ ] UI/UX application, job queue and isolated worker runtime
-- [ ] Multi-language dubbing, game-promo/video-to-shorts presets, output QC including listening and frame comparisons
+## Implemented
 
-- [x] Executable transcript-grounded model Agent, four strategies, protected terms/numbers, explicit auto-apply and local FFmpeg pipeline
-- [x] Provider-neutral compatible HTTP transport, token/response limits, cached single submission and resumable job manifest
-- [ ] Automatic async timestamped ASR submission/query (completed file-ASR import is implemented)
+- [x] Independent Python package, CLI and strict vendor-neutral JSON timeline
+- [x] FFmpeg trim/concatenation, gaps, speed, original/mixed audio, SRT burn and MP4
+- [x] Source overwrite/hard-link and source-range guards; globally bounded frame clock
+- [x] Export canvas/fps/decoded-frame/A-V timing checks and complete decode verification
+- [x] StepAudio text-only SSE with language/source-bound cache, normalization and uncertain-submission guard
+- [x] Completed Step file-ASR timestamp import, channel/overlap guards and SRT conversion
+- [x] Frame-aligned speech rough cuts, exact cue remapping and explainable removed ranges
+- [x] Transcript fingerprint, strict AI decision contract and editable review proposals
+- [x] Executable compatible-model Agent with conservative/standard/aggressive/highlights strategies
+- [x] Independent numeric/term/context/category/confidence policy and explicit auto-apply
+- [x] Bounded model requests, explicit network/cost opt-in, cached successful response and recoverable job manifest
+- [x] Authenticated loopback UI with import/preview, timed-caption editing, Agent settings, music and real exports
+- [x] Sequential persisted UI jobs and reversible review/restoration child versions
+- [x] Browser workflow, actual MP4 download and desktop/mobile overflow acceptance (CI run 39986291653)
+- [x] Batch manifest CLI with independent job state, partial-failure reporting and recovery
+- [x] Repository-local bootstrap, Python wheel assets, authored Agent Skill and synthetic-media smoke
+- [x] External Jianying basic-plan adapter and authorized Yichen router integration
+- [x] Openverse audio metadata search with commercial-license filters
 
-- [x] Loopback local UI: import/preview, timed-caption editing, Agent settings, music, task stages, sequential queue, review/restoration versions and real artifact downloads
-- [x] Reproducible synthetic-media smoke demo; backend/auth/range/job-version tests
-- [ ] Browser interaction and responsive screenshots: CI gate configured; await actual run before declaring verified
+## Active release gates
+
+- [ ] Windows/macOS/Linux FFmpeg + package matrix: configured; record actual results after CI completes
+- [ ] Paid model/ASR provider acceptance with approved credentials and cost limits (tests currently use local fixtures/mocks)
+- [ ] Automatic file-ASR submit/query/recovery and raw-video-only end-to-end operation
+- [ ] Forced alignment and reliable word-level timestamps where utterance timing is insufficient
+- [ ] Multitrack video/B-roll/picture-in-picture, transitions, keyframes and richer caption styling/animation
+- [ ] Multiple independent highlight exports, semantic rearrangement and content presets
+- [ ] Licensed sound-effect acquisition/attribution verification and automatic music scheduling/ducking
+- [ ] Isolated process workers, cancellation and bounded persistent queue policies for larger local installations
+- [ ] Authorized native Jianying runtime/draft/export compatibility matrix; GUI and true headless paths reported separately
+- [ ] Human/perceptual cut, ASR accuracy and lip-sync acceptance beyond structural media checks
+
+The current UI timeline displays and seeks retained segments; it does not claim drag editing or arbitrary multitrack manipulation. Aspect conversion fits and pads; it does not claim automatic face tracking. Targets are advisory when meaning/content protection prevents further cuts. Alpha packaging is not a declaration that all release gates are complete.

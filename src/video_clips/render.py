@@ -13,6 +13,7 @@ import tempfile
 from .plan import Clip, Plan, PlanError
 from .subtitles import write_srt
 from .quality import check_sources, verify_output
+from .dependencies import require_subtitle_filter
 
 
 @dataclass(frozen=True)
@@ -154,6 +155,8 @@ def render(plan: Plan, output: str | Path, *, overwrite: bool = False,
            ffmpeg: str = "ffmpeg", ffprobe: str = "ffprobe", timeout: int = 600) -> RenderResult:
     if shutil.which(ffmpeg) is None or shutil.which(ffprobe) is None:
         raise RuntimeError("FFmpeg and FFprobe must be installed and available in PATH")
+    if plan.captions:
+        require_subtitle_filter(ffmpeg)
     target = Path(output).expanduser().resolve()
     if target.suffix.lower() != ".mp4":
         raise PlanError("output must end in .mp4")

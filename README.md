@@ -1,6 +1,6 @@
 # VIDEO-Clips
 
-> Local-first AI video editing toolkit · 本地优先的视频剪辑自动化工程（v0.1.0）
+> Local-first AI video editing toolkit · 本地优先的视频剪辑自动化工程（v0.2.0a1）
 
 [![Python CI](https://github.com/ForceMind/VIDEO-Clips/actions/workflows/ci.yml/badge.svg)](https://github.com/ForceMind/VIDEO-Clips/actions/workflows/ci.yml)
 
@@ -25,6 +25,10 @@ VIDEO-Clips connects a **vendor-neutral, executable FFmpeg timeline** with optio
 ## Local editing workbench
 
 Run `python -m video_clips ui --workspace /path/to/media`. The authenticated loopback app connects real media preview, editable timed captions, AI settings, background music, sequential jobs, versioned cut review/restoration and verified exports. See [local UI guide](docs/LOCAL-UI.md). It is a local application; no hosted site is created.
+
+## Install and launch
+
+`python tools/start.py --workspace /path/to/media` checks dependencies, installs this checkout into a local environment and starts the application. See [installation and package guide](docs/INSTALL.md), [batch processing](docs/BATCH.md) and the repository Agent Skill at `skills/video-clips/`.
 
 ## Quick start
 
