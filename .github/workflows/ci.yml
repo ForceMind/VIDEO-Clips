@@ -22,7 +22,7 @@ jobs:
             python: '3.13'
           - os: windows-latest
             python: '3.13'
-          - os: macos-14
+          - os: macos-latest
             python: '3.13'
     steps:
       - uses: actions/checkout@v4
@@ -38,14 +38,11 @@ jobs:
           fi
           command -v ffmpeg
           command -v ffprobe
-      - name: Install FFmpeg on macOS runner
+      - name: Install full FFmpeg with subtitles on macOS runner
         if: runner.os == 'macOS'
         run: |
-          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            brew install ffmpeg
-          fi
-          command -v ffmpeg
-          command -v ffprobe
+          brew install ffmpeg-full
+          echo "$(brew --prefix ffmpeg-full)/bin" >> "$GITHUB_PATH"
       - name: Install FFmpeg on Windows runner
         if: runner.os == 'Windows'
         shell: pwsh

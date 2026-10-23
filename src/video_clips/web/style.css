@@ -824,3 +824,5 @@ footer select {
     width: 220px;
   }
 }
+
+.volume-line > span { flex-shrink: 0; white-space: nowrap; }

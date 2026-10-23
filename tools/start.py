@@ -20,7 +20,10 @@ def main(argv=None):
     if sys.version_info<(3,10):raise RuntimeError('Python 3.10 or later is required')
     missing=[name for name in ('ffmpeg','ffprobe') if not shutil.which(name)]
     if missing:
-        raise RuntimeError('Missing '+', '.join(missing)+'. Install FFmpeg first: Windows winget install Gyan.FFmpeg; macOS brew install ffmpeg; Debian/Ubuntu sudo apt-get install ffmpeg.')
+        raise RuntimeError('Missing '+', '.join(missing)+'. Install FFmpeg first: Windows winget install Gyan.FFmpeg; macOS brew install ffmpeg-full; Debian/Ubuntu sudo apt-get install ffmpeg.')
+    filters=subprocess.run(['ffmpeg','-hide_banner','-filters'],capture_output=True,encoding='utf-8',errors='replace',check=True,timeout=20)
+    if not any(len(parts:=line.split())>1 and parts[1]=='subtitles' for line in filters.stdout.splitlines()):
+        raise RuntimeError('FFmpeg needs the subtitles/libass filter. On macOS install ffmpeg-full and put its bin directory first on PATH.')
     workspace=Path(args.workspace).expanduser().resolve(strict=True)
     if not workspace.is_dir():raise ValueError('workspace must be an existing directory')
     if not 0<=args.port<=65535:raise ValueError('port must be 0..65535')

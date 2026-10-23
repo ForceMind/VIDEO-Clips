@@ -11,6 +11,7 @@ from .rough_cut import compile_rough_cut, video_metadata
 from .subtitles import parse_srt
 from .timed_asr import captions_from_step_file
 from .quality import audio_duration_ms
+from .dependencies import require_subtitle_filter
 
 
 def run_batch(manifest, workdir, *, allow_paid=False, apply_cuts=False, render_output=False, resume=False):
@@ -74,6 +75,8 @@ def run_batch(manifest, workdir, *, allow_paid=False, apply_cuts=False, render_o
             if music.is_symlink(): raise ValueError("music cannot be a symlink")
             audio_duration_ms(music)
         prepared.append((row, media, cues, options, config, response))
+    if render_output:
+        require_subtitle_filter()
     root = Path(workdir).expanduser()
     if root.is_symlink(): raise ValueError("batch directory cannot be a symlink")
     if resume and not root.is_dir(): raise FileNotFoundError("batch directory does not exist")

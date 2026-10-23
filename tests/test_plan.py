@@ -27,7 +27,7 @@ class PlanTests(unittest.TestCase):
     def test_load(self):
         p = load_plan(self.plan())
         self.assertEqual((p.width, p.height, p.fps, p.duration_ms), (320, 240, 25, 2000))
-        self.assertEqual(p.videos[0].path, self.root / "clip.mp4")
+        self.assertEqual(p.videos[0].path, (self.root / "clip.mp4").resolve())
 
     def test_reject_overlap(self):
         self.data["video"].append({"source": "clip.mp4", "start_ms": 1000, "duration_ms": 500})
@@ -57,7 +57,7 @@ class PlanTests(unittest.TestCase):
     def test_srt_round_trip(self):
         p = load_plan(self.plan())
         file = write_srt(p.captions, self.root / "captions.srt")
-        self.assertEqual(parse_srt(file.read_text()), list(p.captions))
+        self.assertEqual(parse_srt(file.read_text(encoding="utf-8")), list(p.captions))
 
     def test_jianying_mapping(self):
         target = self.root / "native.json"

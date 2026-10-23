@@ -17,6 +17,7 @@ from .render import render
 from .rough_cut import compile_rough_cut, read_cut_decisions, video_metadata
 from .subtitles import write_srt
 from .quality import audio_duration_ms
+from .dependencies import require_subtitle_filter
 
 
 def file_sha256(path: Path) -> str:
@@ -63,6 +64,8 @@ def run_agent_pipeline(source, captions, workdir, options: AgentOptions, *,
     # Validate transcript AND compile feasibility before any potentially paid call.
     digest = transcript_sha256(captions)
     compile_rough_cut(source, captions, **metadata)
+    if render_output:
+        require_subtitle_filter()
     if (model is None) == (response_file is None):
         raise ValueError("choose exactly one model configuration or offline response file")
     response_text = None

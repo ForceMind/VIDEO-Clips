@@ -21,8 +21,10 @@ If FFmpeg is missing, install it using your platform's normal package manager:
 | Platform | Example prerequisite command |
 |---|---|
 | Windows | `winget install Gyan.FFmpeg` |
-| macOS | `brew install ffmpeg` |
+| macOS | `brew install ffmpeg-full` |
 | Debian/Ubuntu | `sudo apt-get install ffmpeg` |
+
+Homebrew marks `ffmpeg-full` as keg-only; add its bin directory before other FFmpeg installations, for example `export PATH="$(brew --prefix ffmpeg-full)/bin:$PATH"` in the launch shell. The installer and `doctor` inspect actual subtitle-filter availability. See the [official formula](https://formulae.brew.sh/formula/ffmpeg-full).
 
 Linux systems also need fonts for Chinese UI/subtitle display; for example `sudo apt-get install fonts-noto-cjk`. Windows/macOS normally provide system CJK fonts. A browser's ability to preview the original codec depends on its own decoder; FFmpeg rendering support is separate.
 

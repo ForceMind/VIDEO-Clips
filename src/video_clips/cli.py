@@ -20,6 +20,7 @@ from .yichen import route_asr, skill_entry
 from .agent import AgentOptions, STRATEGIES
 from .llm import ModelConfig
 from .pipeline import run_agent_pipeline
+from .dependencies import ffmpeg_features
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -148,6 +149,7 @@ def _doctor(jianying_root: str | None, skills_root: str | None) -> dict:
         except (OSError, RuntimeError, ValueError):
             return False
     return {"version": __version__, "ffmpeg": shutil.which("ffmpeg") is not None,
+            "ffmpeg_features": ffmpeg_features(),
             "ffprobe": shutil.which("ffprobe") is not None,
             "stepfun_key_configured": bool(os.environ.get("STEPFUN_API_KEY") or os.environ.get("STEP_API_KEY")),
             "jianying_checkout_detected": available(lambda: external_entry(jianying_root)),
