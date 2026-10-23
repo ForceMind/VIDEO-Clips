@@ -13,6 +13,7 @@ from .subtitles import write_srt, parse_srt
 from .step_asr import transcribe
 from .timed_asr import captions_from_step_file
 from .rough_cut import compile_rough_cut, video_metadata, read_cut_decisions
+from .editorial import make_editorial_brief, approve_editorial_proposals
 from .openverse import search_audio
 from .jianying import export_plan, run_external, external_entry
 from .yichen import route_asr, skill_entry
@@ -59,6 +60,22 @@ def _parser() -> argparse.ArgumentParser:
     rough.add_argument("--merge-gap-ms", type=int, default=650)
     rough.add_argument("--out", required=True, help="new VIDEO-Clips edit plan JSON")
     rough.add_argument("--report", help="new human-readable JSON review report")
+    brief = sub.add_parser("editorial-brief", help="generate a transcript-bound brief for AI editing (offline)")
+    brief_timings = brief.add_mutually_exclusive_group(required=True)
+    brief_timings.add_argument("--srt", help="timed subtitle input")
+    brief_timings.add_argument("--step-file", help="completed StepFun file-ASR JSON")
+    brief.add_argument("--channel", type=int, default=None)
+    brief.add_argument("--context", type=int, default=1, help="number of neighboring cues, 0..3")
+    brief.add_argument("--out", required=True, help="new editable JSON brief")
+    approve = sub.add_parser("editorial-approve", help="compile reviewed AI proposals to safe rough-cut decisions")
+    approve_timings = approve.add_mutually_exclusive_group(required=True)
+    approve_timings.add_argument("--srt", help="same timed subtitle input as brief")
+    approve_timings.add_argument("--step-file", help="same StepFun file-ASR JSON")
+    approve.add_argument("--channel", type=int, default=None)
+    approve.add_argument("--proposals", required=True, help="AI recommendations with explicit approved booleans")
+    approve.add_argument("--allow-numeric-exclusion", action="store_true")
+    approve.add_argument("--out", required=True, help="new reviewed cut-decisions JSON")
+    approve.add_argument("--report", help="new audit report JSON (defaults to sibling)")
     sound = sub.add_parser("openverse", help="search Openverse audio metadata")
     sound.add_argument("query")
     sound.add_argument("--commercial", action="store_true")
@@ -98,6 +115,14 @@ def _doctor(jianying_root: str | None, skills_root: str | None) -> dict:
             "jianying_checkout_detected": available(lambda: external_entry(jianying_root)),
             "yichen_asr_router_detected": available(lambda: skill_entry(skills_root, "yichen-asr", "route_asr.py"))}
 
+
+def _timed_cues(*, srt: str | None, step_file: str | None, channel: int | None):
+    if srt:
+        if channel is not None:
+            raise PlanError("--channel applies only to StepFun file-ASR JSON")
+        return parse_srt(Path(srt).expanduser().read_text(encoding="utf-8-sig"))
+    payload = json.loads(Path(step_file).expanduser().read_text(encoding="utf-8"))
+    return captions_from_step_file(payload, channel=channel)
 
 def main(argv: list[str] | None = None) -> int:
     options = _parser().parse_args(argv)
@@ -150,6 +175,28 @@ def main(argv: list[str] | None = None) -> int:
                 raise FileExistsError(f"will not overwrite existing SRT: {target}")
             write_srt(captions, target)
             print(target)
+        elif options.action == "editorial-brief":
+            cues = _timed_cues(srt=options.srt, step_file=options.step_file, channel=options.channel)
+            brief = make_editorial_brief(cues, context=options.context)
+            _exclusive_write(options.out, json.dumps(brief, ensure_ascii=False, indent=2) + "\n")
+            print(json.dumps({"brief": options.out, "cues": len(cues),
+                              "transcript_sha256": brief["transcript_sha256"]}, indent=2))
+        elif options.action == "editorial-approve":
+            cues = _timed_cues(srt=options.srt, step_file=options.step_file, channel=options.channel)
+            raw = json.loads(Path(options.proposals).expanduser().read_text(encoding="utf-8"))
+            decisions, audit = approve_editorial_proposals(
+                cues, raw, allow_numeric_exclusion=options.allow_numeric_exclusion)
+            target = Path(options.out).expanduser().resolve()
+            report = (Path(options.report).expanduser().resolve() if options.report
+                      else target.with_name(target.stem + ".review.json"))
+            if target == report or target.exists() or report.exists():
+                raise FileExistsError("decision/report files already exist or refer to same path")
+            if not target.parent.is_dir() or not report.parent.is_dir():
+                raise PlanError("decision/report output directories must already exist")
+            _exclusive_write(str(target), json.dumps(decisions, ensure_ascii=False, indent=2) + "\n")
+            _exclusive_write(str(report), json.dumps(audit, ensure_ascii=False, indent=2) + "\n")
+            print(json.dumps({"decisions": str(target), "review": str(report),
+                              "approved_exclusions": audit["approved_exclusions"]}, indent=2))
         elif options.action == "rough-cut":
             if options.srt:
                 if options.channel is not None:

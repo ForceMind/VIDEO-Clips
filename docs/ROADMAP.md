@@ -11,6 +11,7 @@
 - [x] Offline Step file-ASR utterance-timestamp result to SRT importer, with multichannel and overlap guards
 - [x] Offline SRT/Step file-ASR speech-to-edit rough-cut compiler with frame-aligned timings, caption remapping, review report and explicit protected-number exclusions
 - [ ] Step file-ASR paid submit/resume/query route and hardened long-running task recovery (requires live provider verification)
+- [x] Transcript-bound AI editorial brief and approved-decision compiler with audit trail and numeric-content guard
 - [ ] Agent semantic cut planner with keep/delete explanations and protected-number/sentence windows
 - [ ] Forced alignment and word-level caption generation (do not fabricate from text-only ASR)
 - [ ] Video/B-roll overlay compositing, keyframes, transitions and richer title styles in cross-platform renderer

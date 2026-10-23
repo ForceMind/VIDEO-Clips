@@ -20,7 +20,7 @@ VIDEO-Clips connects a **vendor-neutral, executable FFmpeg timeline** with optio
 | Jianying Headless integration | Adapter + plan converter | externally installed private/local core; native OS/version/hash requirements remain |
 | yichen-asr Skill router | External adapter | local authorized Skill checkout required; routes text/timestamp needs |
 | Native Jianying 11.6 headless MP4 export | Not supported | upstream itself requires UI export for 11.6 |
-| AI semantic clip selection / accurate word-level alignment | Not yet implemented | transcription is separate from editorial decision-making |
+| AI semantic clip selection / accurate word-level alignment | Partial: review gate only | transcript-bound AI proposal import and reviewer approval; model generation/forced alignment still pending |
 
 ## Quick start
 
@@ -63,6 +63,23 @@ video-clips captions examples/example.plan.json --out ./preview.srt
 ```
 
 `duration_ms` is **output timeline duration**; `source_start_ms` is the source in-point; source duration consumed is `duration_ms × speed`. Primary video clips cannot overlap. Separate audio clips may overlap. Relative media paths resolve relative to the **plan**, not the current working directory. No remote media URLs are accepted.
+
+### Review-gated AI editorial proposals
+
+The first semantic-editing interface is available: generate a timestamp-bound
+`editorial-brief.json` for an external AI to review, then compile its **human-approved**
+suggestions into a versioned exclusion file. Transcript hashes, exact cue text,
+numeric protection and an audit log prevent stale or unapproved model suggestions
+from silently deleting content. This step makes **no paid AI call**.
+
+```bash
+video-clips editorial-brief --srt original.srt --out editorial-brief.json
+video-clips editorial-approve --srt original.srt --proposals proposals.json --out decisions.json
+video-clips rough-cut original.mp4 --srt original.srt --decisions decisions.json --out edited.plan.json
+```
+
+See [AI editorial proposal contract and safe review workflow](docs/EDITORIAL.md).
+An autonomous semantic LLM proposal generator and full acceptance testing remain future work.
 
 ## The three integrations discussed in the original post
 

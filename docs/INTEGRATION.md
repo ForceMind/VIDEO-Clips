@@ -70,3 +70,13 @@ Reference: https://platform.stepfun.com/docs/zh/guides/models/stepaudio-2.5-asr
 The source post identifies two GitHub repositories (with `yichen-asr` and
 `yichen-jianying-edit` as Skill directories) and a hosted StepFun ASR API; it
 does not supply three standalone GitHub source repositories.
+
+## Structured AI-editor handoff (v0.2 stage)
+
+`editorial-brief` emits SHA-256-bound timed cue data for an external AI. The AI's
+proposed KEEP/EXCLUDE decisions are not applied until `editorial-approve` verifies
+the transcript hash, exact text, explicit `approved: true` flag and exclusion
+safeguards. Approved results use the existing `video-clips/cut-decisions/v1`
+schema and flow through the non-destructive rough-cut pipeline. This is **not**
+autonomous model-based ranking or word-level alignment. Detailed usage:
+[docs/EDITORIAL.md](EDITORIAL.md).
