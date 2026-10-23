@@ -1,0 +1,464 @@
+"""Retained isolated fixtures; never modify real projects or the installed app."""
+from copy import deepcopy
+import errno
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+from types import SimpleNamespace
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parent.parent
+for part in ('engine', 'bridge', 'tools'):
+    sys.path.insert(0, str(ROOT / part))
+import build_toolchain as tc
+import runtime_report
+import runtime_io
+import jy14_headless as j
+import native_edit
+
+REAL_CLONEFILE = j.clonefile  # captured before PublishRecoveryTests patches it
+ON_MACOS = sys.platform == 'darwin'
+
+
+class ToolchainTests(unittest.TestCase):
+    def test_clean_environment_does_not_inherit_injection(self):
+        with patch.dict(tc.os.environ, {'SDKROOT': '/bad', 'CPATH': '/bad',
+                                      'MACOSX_DEPLOYMENT_TARGET': '99', 'DYLD_INSERT_LIBRARIES': '/bad'}):
+            self.assertEqual(set(tc.clean_environment('/reviewed')), {'PATH', 'LC_ALL', 'DEVELOPER_DIR'})
+
+    def test_mismatched_first_candidate_does_not_hide_matching_xcode(self):
+        paths = [Path('/new-clt'), Path('/reviewed-xcode')]
+        with patch.object(tc, 'candidates', return_value=paths), patch.object(
+                tc, 'inspect', side_effect=[ValueError('wrong generation'), ({}, {'matched': True})]):
+            self.assertEqual(tc.select_toolchain({}), ({}, {'matched': True}))
+
+    def test_explicit_selection_never_falls_back(self):
+        self.assertEqual(tc.candidates('/explicit'), [Path('/explicit')])
+        with self.assertRaises(ValueError):
+            tc.candidates('relative')
+
+    def test_command_pins_sdk_minimum_os_and_output_basename(self):
+        identity = {'sdk_path': '/reviewed-sdk', 'deployment_target': '26.0'}
+        command = tc.compile_command('/source.cpp', '/frameworks', '/work/jy14_codec_hardened_11_4', identity)
+        self.assertIn('-mmacosx-version-min=26.0', command)
+        self.assertEqual(command[command.index('-isysroot') + 1], '/reviewed-sdk')
+        self.assertEqual(command[-1], '/work/jy14_codec_hardened_11_4')
+
+    def test_exact_compiler_build_not_just_major_version(self):
+        reproduction = {'compiler': 'Apple clang 21.0.0 (clang-2100.1.1.101)',
+                        'macos_sdk': '26.5', 'binary_minimum_macos': '26.0'}
+        for compiler, linker, accepted in [
+                ('Apple clang version 21.0.0 (clang-2100.1.1.101)', '1267', True),
+                ('Apple clang version 21.0.0 (clang-2100.3.34.2)', '1267', False),
+                ('Apple clang version 21.0.0 (clang-2100.1.1.101)', '9999', False)]:
+            with self.subTest(compiler=compiler, linker=linker), patch.object(Path, 'is_dir', return_value=True), patch.object(tc, 'run', side_effect=[compiler, '/sdk', '26.5', json.dumps({'version': linker})]):
+                if accepted:
+                    self.assertEqual(tc.inspect(Path('/developer'), reproduction)[1]['linker'], '1267')
+                else:
+                    with self.assertRaisesRegex(ValueError, 'Not the reviewed toolchain'):
+                        tc.inspect(Path('/developer'), reproduction)
+
+
+class EditProfileGuardTests(unittest.TestCase):
+    def test_unreviewed_edit_runtime_stops_before_reading_source(self):
+        runtime = {'runtime_profile': 'jy14-headless-macos-11.6.1'}
+        with patch.object(native_edit.j.nd, 'doctor', return_value=runtime), \
+                patch.object(native_edit.j.nd, 'helper') as helper, \
+                patch.object(native_edit, 'source_directory') as source:
+            with self.assertRaisesRegex(ValueError, 'no reviewed save profile'):
+                native_edit.load_source('/private-placeholder/draft')
+        helper.assert_not_called()
+        source.assert_not_called()
+
+
+class RuntimeReportTests(unittest.TestCase):
+    def test_missing_installation_never_leaks_path(self):
+        result = runtime_report.report(Path('/private-placeholder/no-app'))
+        self.assertEqual(result['status'], 'unavailable')
+        self.assertNotIn('private-placeholder', json.dumps(result))
+        self.assertTrue(result['read_only'])
+
+
+class DefaultSpeedTests(unittest.TestCase):
+    def test_only_observed_unit_speed_material_omission_is_accepted(self):
+        expected = {'materials': {'speeds': [{'id': 'speed-id', 'type': 'speed', 'speed': 1}]}}
+        actual = deepcopy(expected)
+        del actual['materials']['speeds'][0]['speed']
+        native_edit.preserved(expected, actual)
+        for value in (2, .5, True):
+            bad = deepcopy(expected)
+            bad['materials']['speeds'][0]['speed'] = value
+            with self.assertRaises(ValueError):
+                native_edit.preserved(bad, actual)
+
+    def test_other_fields_segments_and_curves_stay_strict(self):
+        for expected, actual, path in [
+                ({'speed': 1}, {}, '/tracks/track/segments/segment'),
+                ({'speed': 1, 'type': 'speed', 'curve_speed': 'curve'},
+                 {'type': 'speed', 'curve_speed': 'curve'}, '/materials/speeds/id'),
+                ({'speed': 1, 'type': 'speed', 'mode': 1},
+                 {'type': 'speed', 'mode': 1}, '/materials/speeds/id'),
+                ({'volume': 1}, {}, '/materials/speeds/id')]:
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                native_edit.preserved(expected, actual, path)
+
+class SavedPhotoCompanionTests(unittest.TestCase):
+    def fixture(self):
+        expected = {'id': 'timeline', 'new_version': '187.0.0',
+                    'last_modified_platform': {'app_version': '11.5.0'},
+                    'materials': {'videos': [{'id': 'picture', 'type': 'photo', 'has_audio': False}],
+                                  'loudnesses': [{'id': 'old'}]},
+                    'tracks': [{'id': 'track', 'type': 'video', 'segments': [
+                        {'id': 'segment', 'material_id': 'picture', 'extra_material_refs': ['old']}]}]}
+        actual = deepcopy(expected)
+        actual['materials']['loudnesses'][0]['id'] = 'new'
+        actual['tracks'][0]['segments'][0]['extra_material_refs'] = ['new']
+        return expected, actual
+
+    def test_reviewed_photo_defaults_are_bijective_and_nonmutating(self):
+        expected, actual = self.fixture()
+        before = deepcopy(actual)
+        compared, changes = native_edit.normalize_saved_companions(expected, actual, 'jy14-headless-macos-11.5.0')
+        self.assertEqual(compared, expected)
+        self.assertEqual(actual, before)
+        self.assertEqual(len(changes), 1)
+
+    def test_other_versions_audio_video_parameters_and_shared_refs_stay_strict(self):
+        for case in ('version', 'schema', 'provenance', 'audio', 'video', 'gain', 'shared'):
+            expected, actual = self.fixture()
+            runtime = 'jy14-headless-macos-11.5.0'
+            if case == 'version':
+                runtime = 'jy14-headless-macos-11.4.2'
+            elif case == 'schema':
+                expected['new_version'] = '185.0.0'
+            elif case == 'provenance':
+                actual['last_modified_platform']['app_version'] = '11.4.2'
+            elif case == 'audio':
+                expected['materials']['videos'][0]['has_audio'] = True
+            elif case == 'video':
+                expected['materials']['videos'][0]['type'] = 'video'
+            elif case == 'gain':
+                actual['materials']['loudnesses'][0]['gain'] = .5
+            else:
+                actual['tracks'][0]['segments'].append(
+                    {'id': 'other', 'material_id': 'picture', 'extra_material_refs': ['new']})
+            with self.subTest(case=case):
+                compared, changes = native_edit.normalize_saved_companions(expected, actual, runtime)
+                self.assertEqual(changes, [])
+                with self.assertRaises(ValueError):
+                    native_edit.preserved(expected, compared)
+
+
+class SavedProvenanceTests(unittest.TestCase):
+    def test_only_reviewed_device_identifiers_are_normalized(self):
+        before = {'new_version': '187.0.0', 'last_modified_platform':
+                  {'app_version': '11.5.0', 'hard_disk_id': 'old'}}
+        after = deepcopy(before)
+        after['last_modified_platform']['hard_disk_id'] = 'new'
+        self.assertEqual(native_edit.normalize_saved_provenance(
+            before, after, 'jy14-headless-macos-11.5.0'), ['hard_disk_id'])
+        self.assertEqual(after, before)
+
+    def test_versions_missing_values_and_content_remain_strict(self):
+        for case in ('runtime', 'schema', 'app', 'missing', 'empty', 'other'):
+            before = {'new_version': '187.0.0', 'last_modified_platform':
+                      {'app_version': '11.5.0', 'hard_disk_id': 'old', 'os': 'mac'}}
+            after = deepcopy(before)
+            after['last_modified_platform']['hard_disk_id'] = 'new'
+            runtime = 'jy14-headless-macos-11.5.0'
+            if case == 'runtime':
+                runtime = 'jy14-headless-macos-11.4.2'
+            elif case == 'schema':
+                after['new_version'] = '188.0.0'
+            elif case == 'app':
+                after['last_modified_platform']['app_version'] = '11.6.0'
+            elif case == 'missing':
+                del after['last_modified_platform']['hard_disk_id']
+            elif case == 'empty':
+                after['last_modified_platform']['hard_disk_id'] = ''
+            else:
+                after['last_modified_platform']['os'] = 'other'
+            with self.subTest(case=case), self.assertRaises(ValueError):
+                native_edit.normalize_saved_provenance(before, after, runtime)
+                native_edit.preserved(before, after)
+
+    def test_1160_resave_restamps_only_same_version_device_fields(self):
+        before = {'new_version': '189.0.0', 'last_modified_platform':
+                  {'app_version': '11.6.0', 'hard_disk_id': 'old', 'os': 'mac'}}
+        after = deepcopy(before)
+        after['last_modified_platform']['hard_disk_id'] = 'new'
+        self.assertEqual(native_edit.normalize_saved_provenance(
+            before, after, 'jy14-headless-macos-11.6.0'), ['hard_disk_id'])
+        self.assertEqual(after, before)
+        for runtime, schema, app in (('jy14-headless-macos-11.6.0', '187.0.0', '11.6.0'),
+                                     ('jy14-headless-macos-11.6.0', '189.0.0', '11.5.0'),
+                                     ('jy14-headless-macos-11.5.0', '189.0.0', '11.6.0')):
+            before = {'new_version': schema, 'last_modified_platform': {'app_version': app, 'hard_disk_id': 'old'}}
+            after = deepcopy(before)
+            after['last_modified_platform']['hard_disk_id'] = 'new'
+            with self.subTest(runtime=runtime, schema=schema, app=app):
+                self.assertEqual(native_edit.normalize_saved_provenance(before, after, runtime), [])
+                with self.assertRaises(ValueError):
+                    native_edit.preserved(before, after)
+
+
+class PublishRecoveryTests(unittest.TestCase):
+    def setUp(self):
+        work = ROOT / 'work/issue-hardening-tests'
+        work.mkdir(parents=True, exist_ok=True)
+        self.folder = Path(tempfile.mkdtemp(prefix='case-', dir=work))
+        self.root = self.folder / 'projects'
+        self.root.mkdir()
+        self.out = self.folder / 'build'
+        self.target = self.root / 'new-draft'
+        j.write(self.out / 'draft/draft_meta_info.json',
+                {'draft_id': 'new-id', 'draft_fold_path': str(self.target), 'draft_timeline_materials_size_': 0})
+        self.original = {'root_path': str(self.root), 'draft_ids': 7,
+                         'all_draft_store': [{'draft_id': 'existing', 'draft_name': 'untouched'}]}
+        j.write(self.root / 'root_meta_info.json', self.original)
+        self.record = {'runtime_profile': 'test-profile', 'target': str(self.target), 'draft_id': 'new-id',
+                       'files': j.files_manifest(self.out / 'draft')}
+        helper = SimpleNamespace(
+            _validate_runtime_environment=lambda: {'runtime_profile': 'test-profile'},
+            _ensure_editor_closed=lambda _: None, _decrypt_metadata_in_memory=j.read_json,
+            **{name: getattr(runtime_io, name) for name in (
+                '_snapshot_file', '_parse_strict_json', '_revalidate_snapshot',
+                '_acquire_directory_transaction_lock', '_release_directory_transaction_lock')})
+        for context in (patch.object(j.nd, 'DRAFT_ROOT', self.root),
+                        patch.object(j.nd, 'helper', return_value=helper),
+                        patch.object(j, 'read_xattrs', return_value={}),
+                        patch.object(j, 'copy_xattrs', return_value=({}, [])),
+                        patch.object(j, 'clonefile', side_effect=lambda s, d: shutil.copyfile(s, d)),
+                        patch.object(j, 'exclusive_rename', side_effect=lambda a,b: a.rename(b))):
+            context.start()
+            self.addCleanup(context.stop)
+
+    def publish(self, name, resume=False, live=None):
+        return j.publish(self.out, self.folder / name, resume=resume,
+                         verify_build_fn=lambda _: self.record,
+                         verify_live_fn=live or (lambda _: {'status': 'verified'}))
+
+    def failure(self, name):
+        return j.read_json(self.folder / name / 'failure.json')
+
+    def test_attribute_failure_happens_before_final_draft_is_created(self):
+        with patch.object(j, 'copy_xattrs', side_effect=ValueError('macl differs')):
+            with self.assertRaisesRegex(ValueError, 'macl'):
+                self.publish('denied')
+        self.assertFalse(self.target.exists())
+        self.assertEqual(j.read_json(self.root / 'root_meta_info.json'), self.original)
+        self.assertEqual(self.failure('denied')['recovery'], 'publish-after-fixing-cause')
+        self.assertTrue(Path(self.failure('denied')['temporary_index']).is_file())
+        self.assertEqual(self.publish('retry')['status'], 'created')
+
+    def test_commit_failure_resumes_once_and_preserves_other_entries(self):
+        with patch.object(j.os, 'replace', side_effect=OSError('injected commit failure')):
+            with self.assertRaisesRegex(ValueError, 'injected'):
+                self.publish('interrupted')
+        self.assertTrue(self.target.is_dir())
+        self.assertEqual(self.failure('interrupted')['phase'], 'draft_placed')
+        self.assertEqual(j.read_json(self.root / 'root_meta_info.json'), self.original)
+        self.assertEqual(self.publish('resume', True)['status'], 'created')
+        after = j.read_json(self.root / 'root_meta_info.json')
+        self.assertEqual(after['draft_ids'], 8)
+        self.assertEqual(after['all_draft_store'][1:], self.original['all_draft_store'])
+        self.assertEqual(self.publish('again', True)['status'], 'already_registered')
+        self.assertEqual(j.read_json(self.root / 'root_meta_info.json'), after)
+
+    def test_user_modified_draft_is_never_resumed(self):
+        self.publish('ok')
+        j.write(self.target / 'user-change', b'preserve')
+        with self.assertRaisesRegex(ValueError, 'Resume refused'):
+            self.publish('refused', True)
+
+    def test_failure_after_commit_reports_write_not_rollback(self):
+        def failed(_):
+            raise ValueError('post-write verification failed')
+        with self.assertRaisesRegex(ValueError, 'post-write'):
+            self.publish('after-commit', live=failed)
+        self.assertTrue(self.failure('after-commit')['index_replaced'])
+        self.assertEqual(self.failure('after-commit')['recovery'], 'inspect-index-and-run-verify')
+        self.assertEqual(j.read_json(self.root / 'root_meta_info.json')['draft_ids'], 8)
+
+    def test_prepared_index_mutation_is_detected(self):
+        def move_and_tamper(source, target):
+            source.rename(target)
+            for path in self.root.glob('.root_meta_info.headless-*.tmp'):
+                path.write_bytes(b'tampered index')
+        with patch.object(j, 'exclusive_rename', side_effect=move_and_tamper):
+            with self.assertRaisesRegex(ValueError, 'Prepared home index'):
+                self.publish('tampered')
+        self.assertEqual(j.read_json(self.root / 'root_meta_info.json'), self.original)
+        self.assertEqual(self.failure('tampered')['phase'], 'draft_placed')
+
+    def test_already_registered_verification_failure_is_not_an_uncommitted_draft(self):
+        self.publish('created')
+        def failed(_):
+            raise ValueError('registered draft verification failed')
+        with self.assertRaisesRegex(ValueError, 'registered draft'):
+            self.publish('registered-check', True, live=failed)
+        report = self.failure('registered-check')
+        self.assertTrue(report['index_already_registered'])
+        self.assertFalse(report['index_replaced'])
+        self.assertEqual(report['recovery'], 'inspect-index-and-run-verify')
+
+    def test_temporary_index_is_cloned_from_the_original(self):
+        with patch.object(j, 'clonefile', side_effect=lambda s, d: shutil.copyfile(s, d)) as clone:
+            self.assertEqual(self.publish('cloned')['status'], 'created')
+        source, destination = clone.call_args.args
+        self.assertEqual(source, self.root / 'root_meta_info.json')
+        self.assertEqual(destination.parent, self.root)
+        self.assertTrue(destination.name.startswith('.root_meta_info.headless-'))
+        prepared = j.read_json(self.folder / 'cloned' / 'prepared.json')
+        self.assertEqual(prepared['prepared_via'], 'clonefile')
+
+    def test_clonefile_unsupported_falls_back_to_plain_create(self):
+        with patch.object(j, 'clonefile', side_effect=OSError(errno.ENOTSUP, 'not supported')):
+            self.assertEqual(self.publish('fallback')['status'], 'created')
+        prepared = j.read_json(self.folder / 'fallback' / 'prepared.json')
+        self.assertEqual(prepared['prepared_via'], 'create')
+
+    def test_clonefile_errors_other_than_unsupported_never_fall_back(self):
+        for error_no in (errno.EEXIST, errno.EPERM, errno.ELOOP):
+            with self.subTest(error_no=error_no), \
+                    patch.object(j, 'clonefile', side_effect=OSError(error_no, 'injected clone error')):
+                with self.assertRaisesRegex(ValueError, 'injected clone error'):
+                    self.publish('clone-error-' + str(error_no))
+            self.assertFalse(self.target.exists())
+            self.assertEqual(j.read_json(self.root / 'root_meta_info.json'), self.original)
+
+    def test_rewrite_failure_aborts_before_index_replacement(self):
+        with patch.object(j, 'rewrite', side_effect=OSError(errno.ENOSPC, 'injected rewrite failure')):
+            with self.assertRaisesRegex(ValueError, 'injected rewrite failure'):
+                self.publish('rewrite-failed')
+        self.assertFalse(self.target.exists())
+        self.assertEqual(j.read_json(self.root / 'root_meta_info.json'), self.original)
+        report = self.failure('rewrite-failed')
+        self.assertEqual(report['phase'], 'locked')
+        self.assertEqual(report['recovery'], 'publish-after-fixing-cause')
+
+    def test_failure_report_records_index_preparation(self):
+        with patch.object(j, 'copy_xattrs', side_effect=ValueError('com.apple.macl differs')):
+            with self.assertRaisesRegex(ValueError, r'prepared via clonefile'):
+                self.publish('attribute-failed')
+        self.assertEqual(self.failure('attribute-failed')['prepared_via'], 'clonefile')
+        self.assertFalse(self.target.exists())
+
+    @unittest.skipUnless(ON_MACOS, 'clonefile(2) is macOS-only')
+    def test_real_clonefile_publish_replaces_index_with_the_rewritten_clone(self):
+        with patch.object(j, 'clonefile', side_effect=REAL_CLONEFILE):
+            self.assertEqual(self.publish('real-clone')['status'], 'created')
+        self.assertEqual(j.read_json(self.folder / 'real-clone' / 'prepared.json')['prepared_via'], 'clonefile')
+        index = j.read_json(self.root / 'root_meta_info.json')
+        self.assertEqual(index['all_draft_store'][1:], self.original['all_draft_store'])
+        self.assertEqual(index['draft_ids'], self.original['draft_ids'] + 1)
+        self.assertEqual(list(self.root.glob('.root_meta_info.headless-*')), [])
+
+    @unittest.skipUnless(ON_MACOS, 'clonefile(2) is macOS-only')
+    def test_symlinked_home_index_is_refused_while_locked_without_writes(self):
+        outside = self.folder / 'outside-index.json'
+        index = self.root / 'root_meta_info.json'
+        index.rename(outside)
+        index.symlink_to(outside)
+        before = outside.read_bytes()
+        with patch.object(j, 'clonefile', side_effect=REAL_CLONEFILE) as clone:
+            with self.assertRaisesRegex(ValueError, 'Publish failed at locked'):
+                self.publish('symlinked-index')
+        clone.assert_not_called()
+        report = self.failure('symlinked-index')
+        self.assertEqual((report['phase'], report['prepared_via']), ('locked', None))
+        self.assertTrue(index.is_symlink())
+        self.assertEqual(outside.read_bytes(), before)
+        self.assertFalse(self.target.exists())
+        self.assertEqual(list(self.root.glob('.root_meta_info.headless-*')), [])
+
+
+@unittest.skipUnless(ON_MACOS, 'clonefile(2) is macOS-only')
+class CloneFileRealFilesystemTests(unittest.TestCase):
+    """Exercise the real clonefile binding and in-place rewrite on this volume."""
+    def setUp(self):
+        work = ROOT / 'work/issue-hardening-tests'
+        work.mkdir(parents=True, exist_ok=True)
+        self.folder = Path(tempfile.mkdtemp(prefix='clone-', dir=work))
+        self.source = self.folder / 'index.json'
+        self.source.write_bytes(b'{"original": "' + b'x' * 4096 + b'"}')
+        self.before = self.source.read_bytes()
+
+    def identity(self, path):
+        info = path.stat()
+        return info.st_dev, info.st_ino
+
+    def test_existing_destination_is_refused_and_left_unchanged(self):
+        destination = self.folder / 'existing.tmp'
+        destination.write_bytes(b'keep')
+        with self.assertRaises(OSError) as raised:
+            REAL_CLONEFILE(self.source, destination)
+        self.assertEqual(raised.exception.errno, errno.EEXIST)
+        self.assertEqual(destination.read_bytes(), b'keep')
+        self.assertEqual(self.source.read_bytes(), self.before)
+
+    def test_shorter_payload_overwrites_the_clone_exactly(self):
+        destination = self.folder / 'clone.tmp'
+        REAL_CLONEFILE(self.source, destination)
+        j.rewrite(destination, b'{"short": 1}', forbidden=self.identity(self.source))
+        self.assertEqual(destination.read_bytes(), b'{"short": 1}')
+        self.assertEqual(self.source.read_bytes(), self.before)
+
+    def test_symlink_source_is_cloned_as_a_link_and_never_written_through(self):
+        link = self.folder / 'link.json'
+        link.symlink_to(self.source)
+        destination = self.folder / 'from-link.tmp'
+        REAL_CLONEFILE(link, destination)
+        self.assertTrue(destination.is_symlink())
+        with self.assertRaises(OSError) as raised:
+            j.rewrite(destination, b'changed')
+        self.assertEqual(raised.exception.errno, errno.ELOOP)
+        self.assertEqual(self.source.read_bytes(), self.before)
+
+    def test_original_or_hard_linked_index_is_never_truncated(self):
+        with self.assertRaisesRegex(ValueError, 'private regular file'):
+            j.rewrite(self.source, b'changed', forbidden=self.identity(self.source))
+        alias = self.folder / 'alias.json'
+        os.link(self.source, alias)
+        with self.assertRaisesRegex(ValueError, 'private regular file'):
+            j.rewrite(alias, b'changed')
+        self.assertEqual(self.source.read_bytes(), self.before)
+
+
+class AttributePolicyTests(unittest.TestCase):
+    def test_macl_and_quarantine_changes_remain_blocked(self):
+        for name in ('com.apple.macl', 'com.apple.quarantine'):
+            with self.subTest(name=name), patch.object(j, 'write'), patch.object(j.subprocess, 'run'), patch.object(j, 'read_xattrs', return_value={name: b'changed'}):
+                with self.assertRaisesRegex(ValueError, name):
+                    j.copy_xattrs({name: b'original'}, Path('/unused'), Path('/audit'))
+
+    def test_only_provenance_value_change_is_tolerated(self):
+        source = {'com.apple.provenance': b'old', 'com.apple.quarantine': b'kept'}
+        copied = {'com.apple.provenance': b'new', 'com.apple.quarantine': b'kept'}
+        with patch.object(j, 'write'), patch.object(j.subprocess, 'run'), patch.object(j, 'read_xattrs', return_value=copied):
+            staged, changed = j.copy_xattrs(source, Path('/unused'), Path('/audit'))
+        self.assertEqual(staged, copied)
+        self.assertEqual(changed, ['com.apple.provenance'])
+
+    def test_macl_or_quarantine_appearing_or_disappearing_remains_blocked(self):
+        for name in ('com.apple.macl', 'com.apple.quarantine'):
+            for source, copied in (({}, {name: b'x'}), ({name: b'x'}, {})):
+                with self.subTest(name=name, appears=not source), patch.object(j, 'write'), \
+                        patch.object(j.subprocess, 'run'), patch.object(j, 'read_xattrs', return_value=copied):
+                    with self.assertRaisesRegex(ValueError, name):
+                        j.copy_xattrs(source, Path('/unused'), Path('/audit'))
+
+    def test_provenance_appearance_or_disappearance_remains_blocked(self):
+        for source, copied in (({'com.apple.provenance': b'x'}, {}), ({}, {'com.apple.provenance': b'x'})):
+            with self.subTest(source_has_provenance=bool(source)), patch.object(j, 'write'), patch.object(j.subprocess, 'run'), patch.object(j, 'read_xattrs', return_value=copied):
+                with self.assertRaisesRegex(ValueError, 'provenance'):
+                    j.copy_xattrs(source, Path('/unused'), Path('/audit'))
+
+
+if __name__ == '__main__':
+    unittest.main()
