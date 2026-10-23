@@ -48,3 +48,7 @@ The model client makes at most one request per cache identity, bounds input/outp
 - Native Jianying draft rendering/export: requires compatible native runtimes/assets and possibly GUI interaction; not validated on this Linux cloud host. MP4 from FFmpeg is never described as a native Jianying export.
 
 No paid ASR/model call or third-party media download is performed by the test suite. Tests run a loopback compatible HTTP server, return fixture model decisions, deliberately interrupt rendering, resume without a second POST, and render actual H.264/AAC MP4 from synthetic media.
+
+## Render quality gate
+
+Before rendering, requested source ranges are checked against probed stream lengths. Export paths cannot equal or hard-link to any input even with `--overwrite`. Video segments are quantized on the global output frame clock so many short fractional-frame cuts do not accumulate drift. The result is checked for canvas/rate, decoded frame count, separate video/audio durations and origin, container duration, and full audio/video decode. `auto-edit --render` saves `quality.json` and the verified output hash in `job.json`. These checks do not establish perceptual lip sync, ASR accuracy or subjective cut quality.

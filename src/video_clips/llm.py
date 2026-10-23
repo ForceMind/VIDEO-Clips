@@ -107,10 +107,13 @@ def complete(request: dict, config: ModelConfig, cache_dir: Path, *, allow_paid:
         raise RuntimeError(f"model HTTP {exc.code}; pending submission retained, no automatic retry") from exc
     except (urllib.error.URLError, TimeoutError) as exc:
         raise RuntimeError("model network failure; pending submission retained, no automatic retry") from exc
-    except (KeyError, IndexError, TypeError, UnicodeError) as exc:
+    except (KeyError, IndexError, TypeError, AttributeError, UnicodeError) as exc:
         raise RuntimeError("malformed model response; pending submission retained") from exc
+    usage = result.get("usage")
+    usage = {k: v for k, v in usage.items() if k in {"prompt_tokens", "completion_tokens", "total_tokens"}
+             and type(v) is int and v >= 0} if isinstance(usage, dict) else None
     completed = {"request_sha256": identity, "response": parsed,
-                 "usage": result.get("usage"), "billing": "provider-reported usage; cost not estimated"}
+                 "usage": usage, "billing": "provider-reported usage; cost not estimated"}
     with cached.open("x", encoding="utf-8") as stream:
         json.dump(completed, stream, ensure_ascii=False, indent=2)
     pending.unlink()
