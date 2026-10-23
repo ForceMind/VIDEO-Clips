@@ -14,7 +14,9 @@ Pinned external repositories:
 - [wtcbill/jianying-headless](https://github.com/wtcbill/jianying-headless) at `27c2627bbd0fccc8484000f32e9d66a820f4b698`. Includes `skills/yichen-jianying-edit/`.
 - [mcncarl/yichen-skills](https://github.com/mcncarl/yichen-skills) at `6e0c0ae43b5fd168040b8eb5193392e47b6f6301`. Includes `yichen-asr`. Its newer commit removed the old `yichen-jianying-edit` directory; that component remains in the preserved Jianying snapshot.
 
-**Important:** Every branch of this GitHub repository is PUBLIC. The upstream licenses restrict redistribution, so the branch does **not** publicly contain copies of the copyrighted third-party files. Git object hashes and scripts are **not** an offline copy of those files. If upstream content becomes inaccessible before a private clone has been made, this file index alone cannot restore it.
+**Verified 2026-10-23:** The branch at `1afe29dd23fac61c27d8a98a4aa17e9ec8d1cdb5` actually contains 106 Jianying and 235 Yichen upstream files under `backup/upstream/`, in addition to the metadata/helper. Earlier documentation incorrectly described it as metadata-only. Every copied blob matches its pinned upstream Git object. Two Jianying MP4 demo files are absent. Their pinned objects were retrieved and both Git SHA-1 and SHA-256 verified in cloud scratch; see [integrity record](upstream-integrity-20261023.json). The preserved branch has not been changed.
+
+All branches here are public. The actual upstream licenses restrict packaged public redistribution and commercial use. Further third-party sources/media are not added to product branches; native integration uses separately obtained authorized local checkouts. Existing upstream notices/licenses are retained.
 
 To build an actual self-contained backup for *personal local use*, check out the backup branch in your own authorized environment and run:
 

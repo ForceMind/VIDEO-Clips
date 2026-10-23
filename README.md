@@ -20,7 +20,7 @@ VIDEO-Clips connects a **vendor-neutral, executable FFmpeg timeline** with optio
 | Jianying Headless integration | Adapter + plan converter | externally installed private/local core; native OS/version/hash requirements remain |
 | yichen-asr Skill router | External adapter | local authorized Skill checkout required; routes text/timestamp needs |
 | Native Jianying 11.6 headless MP4 export | Not supported | upstream itself requires UI export for 11.6 |
-| AI semantic clip selection / accurate word-level alignment | Partial: review gate only | transcript-bound AI proposal import and reviewer approval; model generation/forced alignment still pending |
+| AI semantic clip selection | Implemented Agent + policy + FFmpeg pipeline | configurable compatible model API, four strategies, exact cue evidence, review/auto-apply, cached recovery; forced alignment and raw-video async ASR submission still pending |
 
 ## Quick start
 
@@ -63,6 +63,10 @@ video-clips captions examples/example.plan.json --out ./preview.srt
 ```
 
 `duration_ms` is **output timeline duration**; `source_start_ms` is the source in-point; source duration consumed is `duration_ms × speed`. Primary video clips cannot overlap. Separate audio clips may overlap. Relative media paths resolve relative to the **plan**, not the current working directory. No remote media URLs are accepted.
+
+### Executable AI Agent
+
+Use `video-clips auto-edit` to generate transcript-grounded decisions, apply an independent policy and optionally render an MP4. Four strategies, protected terms, numeric guards, offline replay, cached model responses and resumable local jobs are supported. Model requests are disabled unless explicitly enabled. See [Agent CLI, examples and honest limitations](docs/AGENT.md) and [engineering audit](docs/AUDIT-20261023.md).
 
 ### Review-gated AI editorial proposals
 
