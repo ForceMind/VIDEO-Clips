@@ -6,7 +6,7 @@
 Local sources / user-provided captions
           |
           v
-  video-clips/v1 JSON edit plan <-- editorial agent (future)
+  video-clips/v1 JSON edit plan <-- speech-timed rough-cut compiler / editorial agent (future)
           |             |                    |
           v             v                    v
       Validator     subtitle SRT       StepAudio 2.5 ASR (text)
@@ -31,6 +31,7 @@ Openverse search: remote discovery of candidate sound effects with per-item lice
 - `jianying` external path is **not vendored**; `JIANYING_HEADLESS_ROOT` must refer to a separately installed authorized checkout. Upstream byte-for-byte source integrity checks remain in force. A mismatched copy fails closed.
 - `yichen-asr` optional router is **not included**. It can choose a timestamp-capable provider when user needs SRT; its selection output does not replace calling the actual provider. `STEPFUN_API_KEY` is evaluated only for the explicit `step-asr` command.
 - Step SSE ASR is text-only in VIDEO-Clips v0.1. Need word/utterance timestamps for quality subtitles and precise semantic deletion; do not invent timestamps from character counts. Pending/ambiguous submissions are never automatically retried or switched providers.
+- `rough-cut` consumes existing timed SRT or completed file-ASR JSON *offline*. It probes local video duration, maps transcript coverage into frame-quantized clips, and outputs a decision log. This is **not** acoustic silence detection or AI semantic judgement: untranscribed gaps may be important. Manual/AI-proposed cue removals require explicit numbered decisions and reasons, and numerical speech is protected by default. Input media is never rewritten.
 - Openverse is an audio **index**, not a global license. Search results retain attribution, creator, source and license information; download, waveform matching, and automatic insertion are future tasks.
 - Native render (`render.py`) works independently of the proprietary editing engine, using subprocess argument lists (not `shell=True`). FFmpeg & FFprobe availability is diagnosed locally.
 
@@ -43,6 +44,7 @@ Openverse search: remote discovery of candidate sound effects with per-item lice
 | Paid Step ASR live service | explicit caller authorization, live API response | **not tested** |
 | Native Jianying draft | compatible Mac, native checkout, actual build and cold reopen | **not tested** |
 | Original 11.6 native headless export | upstream-compatible snapshot, native output | **upstream does not support yet** |
+| Utterance-timed rough cut | timed SRT/Step file response + real FFmpeg MP4 test | **implemented offline** |
 | Word-level subtitle alignment | timestamp backend + human/QC acceptance | **future** |
 
 ## Guardrails

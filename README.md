@@ -14,6 +14,7 @@ VIDEO-Clips connects a **vendor-neutral, executable FFmpeg timeline** with optio
 |---|---|---|
 | Local timeline + FFmpeg renderer | Implemented + smoke tested | cut/trim, reorder, speed, original audio, separate audio mix, gaps, letterboxing, SRT burn, MP4 |
 | Subtitle SRT import/export | Implemented | SRT requires timings; text-only transcription cannot magically infer word times |
+| Speech-timed rough-cut compiler | Implemented + local end-to-end test | offline SRT/Step file-ASR → non-destructive edit plan with remapped captions, explanation report, optional reviewed cuts |
 | StepAudio 2.5 ASR | SSE text client + offline file-result subtitle importer | paid API key required for SSE; no live paid call tested; file result must contain actual utterance timestamps |
 | Openverse audio search | Implemented, mocked tests | metadata + license filters, no automatic asset downloading |
 | Jianying Headless integration | Adapter + plan converter | externally installed private/local core; native OS/version/hash requirements remain |
@@ -79,6 +80,38 @@ video-clips step-asr /path/to/voice.mp4 --out ./transcript.json --language zh
 ```
 
 The client sends a **single** SSE request to `/v1/audio/asr/sse`, stores a content-bound result, and blocks automatic resubmission if completion is uncertain. The endpoint returns authoritative transcript **text**, but this flow does not provide precise word-level timing; do not use it as a substitute for a timestamp/forced-alignment engine. No payment or API invocation happens during `doctor`, `validate`, or local `render`.
+
+### Offline speech-timed rough cuts (no API request)
+
+Use a completed StepFun file-ASR response with **utterance timestamps** or an existing SRT. The compiler selects transcript-covered portions (plus configurable margins), removes only untranscribed gaps above a threshold, remaps captions onto the new timeline and writes a separate review report. **It does not make AI semantic deletion decisions, use silence detection, or claim an untranscribed section is unimportant.** Review omitted material and cut boundaries before accepting a video.
+
+```bash
+# From a timestamped ASR file response (offline; does not submit a paid request):
+video-clips rough-cut /path/to/recording.mp4 --step-file /path/to/completed-file-asr.json \
+  --out /path/to/rough.plan.json
+# Or from an SRT:
+video-clips rough-cut /path/to/recording.mp4 --srt /path/to/transcript.srt \
+  --padding-before-ms 120 --padding-after-ms 160 --merge-gap-ms 650 \
+  --out /path/to/rough.plan.json
+
+# An editable plan and a rough.review.json audit report are now available.
+video-clips validate /path/to/rough.plan.json
+video-clips render /path/to/rough.plan.json --out /path/to/rough.mp4
+# For compatible, separately installed Jianying Headless:
+video-clips jianying-plan /path/to/rough.plan.json --out /path/to/rough.jianying.json
+```
+
+For manual or AI-proposed **explicit exclusions**, provide an optional separate decisions file with **1-based subtitle cue numbers** and a reason for each removed cue:
+
+```json
+{"schema":"video-clips/cut-decisions/v1", "exclude":[{"cue":3,"reason":"Repeated introduction, manually reviewed"}]}
+```
+
+```bash
+video-clips rough-cut input.mp4 --srt speech.srt --decisions decisions.json --out rough.plan.json
+```
+
+Cuts containing digits or numerical expressions are **blocked by default**; `--allow-numeric-exclusion` is an explicit override after review. All source media remain unchanged. More details: [reviewable rough-cut workflow](docs/ROUGH-CUT.md).
 
 ### Search Openverse for usable sounds
 

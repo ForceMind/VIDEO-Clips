@@ -12,6 +12,7 @@ from .render import render
 from .subtitles import write_srt, parse_srt
 from .step_asr import transcribe
 from .timed_asr import captions_from_step_file
+from .rough_cut import compile_rough_cut, video_metadata, read_cut_decisions
 from .openverse import search_audio
 from .jianying import export_plan, run_external, external_entry
 from .yichen import route_asr, skill_entry
@@ -45,6 +46,19 @@ def _parser() -> argparse.ArgumentParser:
     timed.add_argument("response", help="JSON response from StepFun /v1/audio/asr/file/query")
     timed.add_argument("--out", required=True)
     timed.add_argument("--channel", type=int, default=None, help="zero-based channel if multiple result streams")
+    rough = sub.add_parser("rough-cut", help="compile timestamped speech into an auditable non-destructive edit plan")
+    rough.add_argument("source", help="local original video (remains unchanged)")
+    timings = rough.add_mutually_exclusive_group(required=True)
+    timings.add_argument("--srt", help="existing time-aligned SRT subtitle file")
+    timings.add_argument("--step-file", help="completed StepFun file-ASR JSON with utterance timestamps")
+    rough.add_argument("--channel", type=int, help="zero-based StepFun channel when multichannel")
+    rough.add_argument("--decisions", help="optional explicit reasoned 1-based cue exclusions JSON")
+    rough.add_argument("--allow-numeric-exclusion", action="store_true")
+    rough.add_argument("--padding-before-ms", type=int, default=120)
+    rough.add_argument("--padding-after-ms", type=int, default=160)
+    rough.add_argument("--merge-gap-ms", type=int, default=650)
+    rough.add_argument("--out", required=True, help="new VIDEO-Clips edit plan JSON")
+    rough.add_argument("--report", help="new human-readable JSON review report")
     sound = sub.add_parser("openverse", help="search Openverse audio metadata")
     sound.add_argument("query")
     sound.add_argument("--commercial", action="store_true")
@@ -136,6 +150,41 @@ def main(argv: list[str] | None = None) -> int:
                 raise FileExistsError(f"will not overwrite existing SRT: {target}")
             write_srt(captions, target)
             print(target)
+        elif options.action == "rough-cut":
+            if options.srt:
+                if options.channel is not None:
+                    raise PlanError("--channel applies only to StepFun file-ASR JSON")
+                cues = parse_srt(Path(options.srt).expanduser().read_text(encoding="utf-8-sig"))
+            else:
+                payload = json.loads(Path(options.step_file).expanduser().read_text(encoding="utf-8"))
+                cues = captions_from_step_file(payload, channel=options.channel)
+            if options.decisions:
+                raw = json.loads(Path(options.decisions).expanduser().read_text(encoding="utf-8"))
+                excluded = read_cut_decisions(raw, len(cues))
+            else:
+                excluded = {}
+            target = Path(options.out).expanduser().resolve()
+            review = (Path(options.report).expanduser().resolve() if options.report
+                      else target.with_name(target.stem + ".review.json"))
+            if target.suffix.lower() != ".json" or review.suffix.lower() != ".json":
+                raise PlanError("rough-cut output and review report must be JSON files")
+            if target == review or target.exists() or review.exists():
+                raise FileExistsError("output or review file already exists; use new filenames")
+            if not target.parent.is_dir() or not review.parent.is_dir():
+                raise PlanError("output directories must already exist")
+            meta = video_metadata(options.source)
+            plan, report = compile_rough_cut(options.source, cues, **meta,
+                padding_before_ms=options.padding_before_ms,
+                padding_after_ms=options.padding_after_ms,
+                merge_gap_ms=options.merge_gap_ms,
+                exclude=excluded, allow_numeric_exclusion=options.allow_numeric_exclusion)
+            _exclusive_write(str(target), json.dumps(plan, ensure_ascii=False, indent=2) + "\n")
+            _exclusive_write(str(review), json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+            print(json.dumps({"plan": str(target), "review": str(review),
+                              "original_ms": meta["duration_ms"],
+                              "output_ms": report["output_duration_ms"],
+                              "clips": len(plan["video"]), "captions": len(plan["captions"]),
+                              "excluded_cues": len(report["excluded_cues"])}, ensure_ascii=False, indent=2))
         elif options.action == "openverse":
             print(json.dumps(search_audio(options.query, limit=options.limit,
                                           commercial=options.commercial), ensure_ascii=False, indent=2))
