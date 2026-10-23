@@ -1,0 +1,35 @@
+{
+  "verified_date": "2026-10-23",
+  "backup_commit": "1afe29dd23fac61c27d8a98a4aa17e9ec8d1cdb5",
+  "sources": [
+    {
+      "repository": "wtcbill/jianying-headless",
+      "commit": "27c2627bbd0fccc8484000f32e9d66a820f4b698",
+      "upstream_files": 108,
+      "backup_files": 106,
+      "matching_blobs": 106,
+      "missing_from_backup": [
+        {
+          "path": "docs/media/hypit-original-preview.mp4",
+          "size_bytes": 4421052,
+          "git_blob_sha1": "baa864959cec361d66b2a0dd5fa7bd71bbbac0cb",
+          "sha256": "0ac79c184ce093a71e73e4ad72f49e44bdf01134154834c983fd52d656095b83"
+        },
+        {
+          "path": "docs/media/jianying-import-preview.mp4",
+          "size_bytes": 4223556,
+          "git_blob_sha1": "60127bda902f31ac8e2db779ab98d64af442539f",
+          "sha256": "ccaf385b0683b9e6b155e3c3422c3e3b2d27a8bb82b2f196344f2baa64e586cc"
+        }
+      ]
+    },
+    {
+      "repository": "mcncarl/yichen-skills",
+      "commit": "6e0c0ae43b5fd168040b8eb5193392e47b6f6301",
+      "upstream_files": 235,
+      "backup_files": 235,
+      "matching_blobs": 235
+    }
+  ],
+  "media_handling": "Both missing MP4 blobs retrieved from pinned upstream Git objects and hashed in cloud scratch. Backup branch untouched. No third-party media republished; upstream license restricts public packaged redistribution."
+}

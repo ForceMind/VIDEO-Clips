@@ -19,3 +19,7 @@
 - [ ] Mac Jianying native compatibility acceptance matrix with authorized runtime; tests for 11.4/11.5/11.6
 - [ ] UI/UX application, job queue and isolated worker runtime
 - [ ] Multi-language dubbing, game-promo/video-to-shorts presets, output QC including listening and frame comparisons
+
+- [x] Executable transcript-grounded model Agent, four strategies, protected terms/numbers, explicit auto-apply and local FFmpeg pipeline
+- [x] Provider-neutral compatible HTTP transport, token/response limits, cached single submission and resumable job manifest
+- [ ] Automatic async timestamped ASR submission/query (completed file-ASR import is implemented)

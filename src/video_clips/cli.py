@@ -17,12 +17,38 @@ from .editorial import make_editorial_brief, approve_editorial_proposals
 from .openverse import search_audio
 from .jianying import export_plan, run_external, external_entry
 from .yichen import route_asr, skill_entry
+from .agent import AgentOptions, STRATEGIES
+from .llm import ModelConfig
+from .pipeline import run_agent_pipeline
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="video-clips", description="Local-first automated video editing toolkit")
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="action", required=True)
+    agent = sub.add_parser("auto-edit", help="AI decisions → policy → timeline → optional FFmpeg MP4")
+    agent.add_argument("source", help="local original video")
+    agent_timings = agent.add_mutually_exclusive_group(required=True)
+    agent_timings.add_argument("--srt", help="existing aligned transcript; no inferred timestamps")
+    agent_timings.add_argument("--step-file", help="completed timestamp-bearing StepFun file-ASR result")
+    agent.add_argument("--channel", type=int)
+    agent.add_argument("--instruction", required=True)
+    agent.add_argument("--strategy", choices=sorted(STRATEGIES), default="standard")
+    agent.add_argument("--target-ms", type=int, help="advisory maximum duration; never overrides protections")
+    agent.add_argument("--protect-term", action="append", default=[], help="retain cues containing this name/term")
+    agent.add_argument("--apply-ai-cuts", action="store_true", help="apply only policy-permitted AI exclusions")
+    provider = agent.add_mutually_exclusive_group(required=True)
+    provider.add_argument("--model-endpoint", help="full Chat Completions compatible URL")
+    provider.add_argument("--response", help="offline agent-decisions JSON instead of calling a model")
+    agent.add_argument("--model", help="provider model ID")
+    agent.add_argument("--key-env", default="VIDEO_CLIPS_MODEL_KEY")
+    agent.add_argument("--max-tokens", type=int, default=16000)
+    agent.add_argument("--model-timeout", type=int, default=180)
+    agent.add_argument("--allow-paid-model", action="store_true", help="explicit opt-in to one model request")
+    agent.add_argument("--workdir", required=True, help="new private local job directory")
+    agent.add_argument("--resume", action="store_true", help="resume same inputs/settings without repeating cached model call")
+    agent.add_argument("--render", action="store_true", help="render output.mp4 with FFmpeg locally")
+    agent.add_argument("--aspect", choices=["source", "16:9", "9:16", "1:1"], default="source")
     validate = sub.add_parser("validate", help="validate the vendor-neutral edit plan")
     validate.add_argument("plan")
     render_ = sub.add_parser("render", help="render local MP4 with FFmpeg")
@@ -127,7 +153,21 @@ def _timed_cues(*, srt: str | None, step_file: str | None, channel: int | None):
 def main(argv: list[str] | None = None) -> int:
     options = _parser().parse_args(argv)
     try:
-        if options.action == "validate":
+        if options.action == "auto-edit":
+            if options.model_endpoint and not options.model:
+                raise PlanError("--model-endpoint requires --model")
+            if options.response and (options.model or options.allow_paid_model):
+                raise PlanError("offline --response cannot be combined with --model or --allow-paid-model")
+            cues = _timed_cues(srt=options.srt, step_file=options.step_file, channel=options.channel)
+            config = (ModelConfig(options.model_endpoint, options.model, options.key_env,
+                                  options.max_tokens, options.model_timeout) if options.model_endpoint else None)
+            result = run_agent_pipeline(options.source, cues, options.workdir,
+                AgentOptions(options.instruction, options.strategy, options.target_ms,
+                             tuple(options.protect_term), options.apply_ai_cuts),
+                model=config, response_file=options.response, allow_paid=options.allow_paid_model,
+                render_output=options.render, aspect=options.aspect, resume=options.resume)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        elif options.action == "validate":
             plan = load_plan(options.plan)
             print(json.dumps({"name": plan.name, "duration_ms": plan.duration_ms,
                               "video_clips": len(plan.videos), "audio_clips": len(plan.audios),
