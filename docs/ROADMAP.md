@@ -8,7 +8,8 @@
 - [x] External Jianying adapter and basic-plan conversion with native safety gates left intact
 - [x] External yichen-asr router adapter
 - [x] Offline tests and CI
-- [ ] Step file-ASR timestamp route + full speech-to-edit timeline compiler (requires current provider documentation, live verification)
+- [x] Offline Step file-ASR utterance-timestamp result to SRT importer, with multichannel and overlap guards
+- [ ] Step file-ASR paid submit/resume/query route + full speech-to-edit timeline compiler (requires live provider verification)
 - [ ] Agent semantic cut planner with keep/delete explanations and protected-number/sentence windows
 - [ ] Forced alignment and word-level caption generation (do not fabricate from text-only ASR)
 - [ ] Video/B-roll overlay compositing, keyframes, transitions and richer title styles in cross-platform renderer

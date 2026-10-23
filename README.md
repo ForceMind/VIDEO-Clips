@@ -14,7 +14,7 @@ VIDEO-Clips connects a **vendor-neutral, executable FFmpeg timeline** with optio
 |---|---|---|
 | Local timeline + FFmpeg renderer | Implemented + smoke tested | cut/trim, reorder, speed, original audio, separate audio mix, gaps, letterboxing, SRT burn, MP4 |
 | Subtitle SRT import/export | Implemented | SRT requires timings; text-only transcription cannot magically infer word times |
-| StepAudio 2.5 ASR | Implemented SSE client, mocked tests | paid API key required; no live paid call tested; text only |
+| StepAudio 2.5 ASR | SSE text client + offline file-result subtitle importer | paid API key required for SSE; no live paid call tested; file result must contain actual utterance timestamps |
 | Openverse audio search | Implemented, mocked tests | metadata + license filters, no automatic asset downloading |
 | Jianying Headless integration | Adapter + plan converter | externally installed private/local core; native OS/version/hash requirements remain |
 | yichen-asr Skill router | External adapter | local authorized Skill checkout required; routes text/timestamp needs |
@@ -108,6 +108,31 @@ To check a separately installed `yichen-asr` router without submitting media:
 export YICHEN_SKILLS_ROOT='/absolute/path/to/yichen-skills'
 video-clips yichen-route-asr --provider auto --timestamps --srt
 ```
+
+### Convert StepFun timestamp results into editable subtitles (offline)
+
+StepAudio 2.5 **SSE** returns text without accurate timestamps. For timed
+subtitles, obtain an **asynchronous file ASR** result using StepFun's
+`POST /v1/audio/asr/file/submit` (`show_utterances=true`) and the corresponding
+`POST /v1/audio/asr/file/query`. This step uses an independently authorized
+external API client; VIDEO-Clips does **not** automatically upload media or
+submit a paid request for this command.
+
+```bash
+video-clips step-file-srt ./completed-step-query.json --out ./captions.srt
+video-clips import-srt examples/example.plan.json --srt ./captions.srt --out ./captioned.plan.json
+video-clips render ./captioned.plan.json --out ./captioned.mp4
+# Optional: video-clips jianying-plan ./captioned.plan.json --out ./captioned.jianying.json
+```
+
+If the response has two audio channels, select one with `--channel 0` or
+`--channel 1`; mixing overlapping speakers into a single caption track is not
+silently attempted. Missing times, failed/running jobs and overlapping
+utterances are rejected, rather than inventing caption positions.
+
+See [original sources and licensing](docs/SOURCES-AND-LICENSES.md) for the
+restored Jianying link and for the difference between GitHub repositories,
+Agent Skill directories and the hosted StepFun API.
 
 ## Tests
 

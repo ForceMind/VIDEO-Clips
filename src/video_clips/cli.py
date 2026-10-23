@@ -11,6 +11,7 @@ from .plan import load_plan, PlanError
 from .render import render
 from .subtitles import write_srt, parse_srt
 from .step_asr import transcribe
+from .timed_asr import captions_from_step_file
 from .openverse import search_audio
 from .jianying import export_plan, run_external, external_entry
 from .yichen import route_asr, skill_entry
@@ -40,6 +41,10 @@ def _parser() -> argparse.ArgumentParser:
     asr.add_argument("source")
     asr.add_argument("--out", required=True)
     asr.add_argument("--language", choices=["zh", "en"], default="zh")
+    timed = sub.add_parser("step-file-srt", help="convert completed StepFun file-ASR utterance times to SRT (offline)")
+    timed.add_argument("response", help="JSON response from StepFun /v1/audio/asr/file/query")
+    timed.add_argument("--out", required=True)
+    timed.add_argument("--channel", type=int, default=None, help="zero-based channel if multiple result streams")
     sound = sub.add_parser("openverse", help="search Openverse audio metadata")
     sound.add_argument("query")
     sound.add_argument("--commercial", action="store_true")
@@ -123,6 +128,14 @@ def main(argv: list[str] | None = None) -> int:
         elif options.action == "step-asr":
             print(json.dumps(transcribe(options.source, options.out, language=options.language),
                              ensure_ascii=False, indent=2))
+        elif options.action == "step-file-srt":
+            response = json.loads(Path(options.response).expanduser().read_text(encoding="utf-8"))
+            captions = captions_from_step_file(response, channel=options.channel)
+            target = Path(options.out).expanduser()
+            if target.exists():
+                raise FileExistsError(f"will not overwrite existing SRT: {target}")
+            write_srt(captions, target)
+            print(target)
         elif options.action == "openverse":
             print(json.dumps(search_audio(options.query, limit=options.limit,
                                           commercial=options.commercial), ensure_ascii=False, indent=2))

@@ -53,3 +53,18 @@ Openverse search: remote discovery of candidate sound effects with per-item lice
 - Do not silently overwrite sources, previously generated projects, or transcripts.
 - If Step's SSE stream ends without `transcript.text.done`, consider request state ambiguous and preserve pending metadata. **Do not retry automatically**.
 - Do not bypass licensed asset requirements, paid effects, authentication or native program compatibility checks.
+
+## StepAudio 2.5 precise subtitles (offline bridge)
+
+`video-clips step-file-srt` accepts the official **completed asynchronous file
+ASR query result**, not text-only SSE output. It reads `result[]`, selects a
+single channel if needed, validates non-overlapping `utterances[]` with integer
+`start_time`/`end_time` **milliseconds**, and writes standard SRT. `import-srt`
+then produces an independent, valid VIDEO-Clips edit plan for FFmpeg or Jianying
+conversion. The conversion performs no network request and does not imply that
+the file ASR API was itself called or validated against a live paid account.
+
+Reference: https://platform.stepfun.com/docs/zh/guides/models/stepaudio-2.5-asr
+The source post identifies two GitHub repositories (with `yichen-asr` and
+`yichen-jianying-edit` as Skill directories) and a hosted StepFun ASR API; it
+does not supply three standalone GitHub source repositories.
