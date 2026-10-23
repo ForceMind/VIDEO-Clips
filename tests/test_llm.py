@@ -63,6 +63,6 @@ class ModelTests(unittest.TestCase):
 
     def test_endpoint_restrictions_and_limits(self):
         for endpoint in ['http://example.org/api', 'https://name:secret@example.org/api',
-                         'https://example.org/api?key=secret', 'ftp://localhost/a']:
+                         'https://example.org/api?key=secret', 'ftp://localhost/a', None, []]:
             with self.assertRaises(ValueError): ModelConfig(endpoint, 'model').validate()
         with self.assertRaises(ValueError): ModelConfig('https://example.org/api', 'model', max_tokens=True).validate()

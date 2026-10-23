@@ -29,6 +29,13 @@ def _parser() -> argparse.ArgumentParser:
     ui = sub.add_parser("ui", help="start a loopback-only local video editing application")
     ui.add_argument("--workspace", default=".", help="local media/job directory accessible to the UI")
     ui.add_argument("--port", type=int, default=8765)
+    batch = sub.add_parser("batch-edit", help="run a sequential manifest of resumable Agent edits")
+    batch.add_argument("manifest")
+    batch.add_argument("--workdir", required=True)
+    batch.add_argument("--allow-paid-model", action="store_true")
+    batch.add_argument("--apply-ai-cuts", action="store_true")
+    batch.add_argument("--render", action="store_true")
+    batch.add_argument("--resume", action="store_true")
     agent = sub.add_parser("auto-edit", help="AI decisions → policy → timeline → optional FFmpeg MP4")
     agent.add_argument("source", help="local original video")
     agent_timings = agent.add_mutually_exclusive_group(required=True)
@@ -158,7 +165,13 @@ def _timed_cues(*, srt: str | None, step_file: str | None, channel: int | None):
 def main(argv: list[str] | None = None) -> int:
     options = _parser().parse_args(argv)
     try:
-        if options.action == "ui":
+        if options.action == "batch-edit":
+            from .batch import run_batch
+            result = run_batch(options.manifest, options.workdir, allow_paid=options.allow_paid_model,
+                apply_cuts=options.apply_ai_cuts, render_output=options.render, resume=options.resume)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0 if result["state"] == "completed" else 2
+        elif options.action == "ui":
             from .local_ui import serve
             serve(options.workspace, port=options.port)
         elif options.action == "auto-edit":

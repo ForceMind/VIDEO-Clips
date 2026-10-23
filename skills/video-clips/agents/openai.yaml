@@ -1,0 +1,4 @@
+interface:
+  display_name: "VIDEO-Clips"
+  short_description: "Edit local videos with reviewable AI decisions"
+  default_prompt: "Use $video-clips to turn my aligned transcript and video into a reviewed short video."

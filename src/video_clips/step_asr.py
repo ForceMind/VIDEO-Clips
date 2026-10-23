@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 import urllib.error
 import urllib.request
+from .quality import audio_duration_ms
 
 ENDPOINT = "https://api.stepfun.com/v1/audio/asr/sse"
 SUPPORTED = {".mp3": "mp3", ".wav": "wav", ".ogg": "ogg", ".opus": "ogg"}
@@ -75,9 +76,13 @@ def build_payload(audio: bytes, file_suffix: str, *, language: str = "zh") -> di
 
 
 def _bytes_from_media(path: Path, *, ffmpeg: str = "ffmpeg") -> tuple[bytes, str]:
-    suffix = path.suffix.lower()
-    if suffix in SUPPORTED:
-        return path.read_bytes(), suffix
+    # A WAV/MP3 extension does not establish 16 kHz mono. Normalize every input
+    # rather than uploading stereo/44.1 kHz media with false format metadata.
+    try:
+        if audio_duration_ms(path) > 1_800_000:
+            raise ASRError("SSE input exceeds 30 minutes; split locally or use an appropriate file-ASR workflow")
+    except ValueError as exc:
+        raise ASRError("cannot inspect input audio before normalization") from exc
     with tempfile.TemporaryDirectory(prefix="video-clips-asr-") as temp:
         output = Path(temp) / "audio.mp3"
         try:
@@ -92,18 +97,25 @@ def _bytes_from_media(path: Path, *, ffmpeg: str = "ffmpeg") -> tuple[bytes, str
 def transcribe(source: str | Path, output: str | Path, *, language: str = "zh",
                api_key: str | None = None, timeout: int = 240, ffmpeg: str = "ffmpeg") -> dict:
     """Explicit paid operation: one request at most, never silently retry or switch provider."""
+    if language not in ("zh", "en"):
+        raise ASRError("language must be zh or en")
     path = Path(source).expanduser().resolve(strict=True)
     dest = Path(output).expanduser().resolve()
     if not path.is_file() or not path.stat().st_size:
         raise ASRError("source audio is missing or empty")
     if not dest.parent.is_dir():
         raise ASRError("output parent directory missing")
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            hasher.update(chunk)
+    digest = hasher.hexdigest()
     if dest.exists():
         old = json.loads(dest.read_text(encoding="utf-8"))
-        if old.get("source_sha256") == digest and old.get("provider") == "stepaudio-2.5-asr":
+        if (old.get("source_sha256") == digest and old.get("provider") == "stepaudio-2.5-asr"
+                and old.get("language") == language):
             return old  # no double billing for identical source
-        raise ASRError("output exists with different source; choose a different output path")
+        raise ASRError("output exists with different source, language or provider; choose a different output path")
     pending = dest.with_name(dest.name + ".pending.json")
     if pending.exists():
         raise ASRError(f"previous request may have been submitted; inspect {pending} before retrying")
@@ -121,6 +133,7 @@ def transcribe(source: str | Path, output: str | Path, *, language: str = "zh",
     # Persist the identity *before* submitting; ambiguous network failures must not be resubmitted.
     with pending.open("x", encoding="utf-8") as file:
         json.dump({"provider": "stepaudio-2.5-asr", "source_sha256": digest,
+                   "language": language,
                    "status": "submission-uncertain", "billing": "unknown"}, file)
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:

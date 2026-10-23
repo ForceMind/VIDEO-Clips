@@ -5,19 +5,32 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.11', '3.13']
+        include:
+          - os: ubuntu-latest
+            python: '3.10'
+          - os: ubuntu-latest
+            python: '3.13'
+          - os: windows-latest
+            python: '3.13'
+          - os: macos-14
+            python: '3.13'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Ensure FFmpeg integration is available
+        if: runner.os == 'Linux'
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
             sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update
@@ -25,11 +38,41 @@ jobs:
           fi
           command -v ffmpeg
           command -v ffprobe
+      - name: Install FFmpeg on macOS runner
+        if: runner.os == 'macOS'
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            brew install ffmpeg
+          fi
+          command -v ffmpeg
+          command -v ffprobe
+      - name: Install FFmpeg on Windows runner
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
+            choco install ffmpeg --no-progress --yes
+          }
+          Get-Command ffmpeg
+          Get-Command ffprobe
       - run: python -m pip install -e .
       - run: python -m unittest discover -s tests -v
       - run: video-clips doctor
+      - run: python -m pip wheel --no-deps --wheel-dir dist .
+      - run: python tools/check_wheel.py dist
+      - run: python tools/smoke_demo.py --out outputs/ci-smoke
+      - run: python tools/start.py --workspace outputs/ci-smoke --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package-and-render-${{ runner.os }}-${{ matrix.python }}
+          path: |
+            dist/*.whl
+            outputs/ci-smoke/evidence.json
+            outputs/ci-smoke/job/
+          retention-days: 14
   browser:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

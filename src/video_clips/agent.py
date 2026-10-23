@@ -39,13 +39,14 @@ class AgentOptions:
     apply_cuts: bool = False
 
     def validate(self):
-        if self.strategy not in STRATEGIES:
+        if not isinstance(self.strategy, str) or self.strategy not in STRATEGIES:
             raise EditorialError("unsupported editing strategy")
         if not isinstance(self.instruction, str) or not 1 <= len(self.instruction.strip()) <= 4000:
             raise EditorialError("editing instruction must contain 1..4000 characters")
         if self.target_ms is not None and (type(self.target_ms) is not int or not 1 <= self.target_ms <= 21_600_000):
             raise EditorialError("target_ms must be 1..21600000")
-        if len(self.protected_terms) > 100 or any(not isinstance(t, str) or not 1 <= len(t.strip()) <= 100 for t in self.protected_terms):
+        if (not isinstance(self.protected_terms, (tuple, list)) or len(self.protected_terms) > 100
+                or any(not isinstance(t, str) or not 1 <= len(t.strip()) <= 100 for t in self.protected_terms)):
             raise EditorialError("protected terms must contain 1..100 characters, at most 100 terms")
         if type(self.apply_cuts) is not bool:
             raise EditorialError("apply_cuts must be boolean")
