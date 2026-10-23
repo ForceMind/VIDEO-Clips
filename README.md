@@ -66,7 +66,7 @@ video-clips captions examples/example.plan.json --out ./preview.srt
 ## The three integrations discussed in the original post
 
 1. **Jianying Headless (replacement source):** [`wtcbill/jianying-headless`](https://github.com/wtcbill/jianying-headless), specifically the archived upstream commit `27c2627bbd0fccc8484000f32e9d66a820f4b698`. Its standalone source remains third-party code under a restrictive license; never copy it into this public repository. The adapter uses `JIANYING_HEADLESS_ROOT`.
-2. **AI editing Skills:** [`mcncarl/yichen-skills`](https://github.com/mcncarl/yichen-skills), particularly `yichen-jianying-edit` and `yichen-asr`. Use a separately authorized local checkout via `YICHEN_SKILLS_ROOT`. The router is an external tool, not bundled into this project.
+2. **AI editing Skills:** [`mcncarl/yichen-skills`](https://github.com/mcncarl/yichen-skills) still carries `yichen-asr`, but its current `main` no longer contains `yichen-jianying-edit`; **the preserved editing Skill is inside the `wtcbill` Jianying Headless snapshot** at `skills/yichen-jianying-edit/`. Use an authorized local Skill checkout via `YICHEN_SKILLS_ROOT` for routing; the native entrypoint comes from the external Jianying checkout.
 3. **StepAudio 2.5 ASR:** [`platform.stepfun.com`](https://platform.stepfun.com/), a **hosted API, not a GitHub repository**. Use an explicitly supplied `STEPFUN_API_KEY` and `video-clips step-asr`. Audio is transmitted to the provider when that command is used; fees may be incurred.
 
 The same post also mentions **Openverse**; VIDEO-Clips exposes its audio search API and preserves attribution information.

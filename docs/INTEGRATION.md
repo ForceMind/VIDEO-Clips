@@ -28,7 +28,7 @@ Openverse search: remote discovery of candidate sound effects with per-item lice
 ## Integration contracts
 
 - `video-clips/v1` is our public source-of-truth. All times are integer **milliseconds**; native Jianying conversion uses integer microseconds. Input media is immutable. The native plan converter guarantees only syntactic field mapping for the documented simple subset, not current-product compatibility.
-- `jinaying` external path is **not vendored**; `JIANYING_HEADLESS_ROOT` must refer to a separately installed authorized checkout. Upstream byte-for-byte source integrity checks remain in force. A mismatched copy fails closed.
+- `jianying` external path is **not vendored**; `JIANYING_HEADLESS_ROOT` must refer to a separately installed authorized checkout. Upstream byte-for-byte source integrity checks remain in force. A mismatched copy fails closed.
 - `yichen-asr` optional router is **not included**. It can choose a timestamp-capable provider when user needs SRT; its selection output does not replace calling the actual provider. `STEPFUN_API_KEY` is evaluated only for the explicit `step-asr` command.
 - Step SSE ASR is text-only in VIDEO-Clips v0.1. Need word/utterance timestamps for quality subtitles and precise semantic deletion; do not invent timestamps from character counts. Pending/ambiguous submissions are never automatically retried or switched providers.
 - Openverse is an audio **index**, not a global license. Search results retain attribution, creator, source and license information; download, waveform matching, and automatic insertion are future tasks.
